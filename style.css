@@ -17,24 +17,114 @@ Version: 1.0.0
  */
 
 :root {
-    /* Cor principal da marca — usada em botões, links, destaques e CTAs */
-    --cor-primaria: #5ba4a0;
+    /* Marrom médio — cor principal de botões, links ativos e destaques */
+    --cor-primaria: #A67C52;
 
-    /* Cor secundária — usada em hover, badges, destaques de preço e elementos de apoio */
-    --cor-secundaria: #a8d5d1;
+    /* Marrom mais escuro — estado hover de botões e links */
+    --cor-primaria-hover: #8B6340;
 
-    /* Cor padrão do texto corrido, títulos e labels de formulários */
-    --cor-texto: #333333;
+    /* Bege claro — fundos de seções de destaque e badges */
+    --cor-secundaria: #D4B896;
 
-    /* Cor de fundo de página, seções e cards de produto */
-    --cor-fundo: #ffffff;
+    /* Bege muito suave — fundo geral da página */
+    --cor-fundo: #FAF7F2;
 
-    /* Família tipográfica principal — aplicada em todo o site via body */
-    --fonte-principal: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    /* Branco puro — fundo de cards de produto e formulários */
+    --cor-fundo-card: #FFFFFF;
 
-    /* Arredondamento de bordas — botões, cards, inputs e imagens de produto */
-    --raio-borda: 8px;
+    /* Marrom escuro — texto principal, títulos e labels */
+    --cor-texto: #3D2B1F;
 
-    /* Espaçamento base para margens e paddings internos de seções */
+    /* Marrom médio-suave — textos secundários, placeholders e meta-informações */
+    --cor-texto-suave: #7A6255;
+
+    /* Bege médio — bordas de inputs, cards e separadores */
+    --cor-borda: #E8D5C0;
+
+    /* Verde musgo — mensagens de sucesso, confirmações e badges positivos */
+    --cor-sucesso: #6B8F71;
+
+    /* Vermelho — mensagens de erro e alertas críticos */
+    --cor-erro: #C0392B;
+
+    /* Tipografia principal — corpo de texto, labels e botões */
+    --fonte-principal: 'Segoe UI', system-ui, sans-serif;
+
+    /* Tipografia de títulos — h1 a h4, nomes de produtos e seções */
+    --fonte-titulo: Georgia, serif;
+
+    /* Arredondamento de bordas — botões, cards, inputs e imagens */
+    --raio-borda: 10px;
+
+    /* Sombra padrão dos cards — leve elevação com tom quente */
+    --sombra-card: 0 2px 12px rgba(166, 124, 82, 0.08);
+
+    /* Espaçamento base — margens e paddings internos de seções */
     --espacamento-base: 1rem;
+
+    /* Largura máxima do conteúdo — centraliza o layout em telas largas */
+    --largura-maxima: 1200px;
+}
+
+
+/*
+ * =========================================================
+ * RESET BÁSICO
+ * =========================================================
+ * Garante consistência entre navegadores eliminando
+ * margens, paddings e o modelo de caixa padrão.
+ * =========================================================
+ */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+
+/*
+ * =========================================================
+ * TIPOGRAFIA BASE
+ * =========================================================
+ */
+
+body {
+    font-family: var(--fonte-principal);
+    color: var(--cor-texto);
+    background-color: var(--cor-fundo);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4 {
+    font-family: var(--fonte-titulo);
+    color: var(--cor-primaria);
+    line-height: 1.3;
+}
+
+a {
+    color: var(--cor-primaria);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+a:hover {
+    color: var(--cor-primaria-hover);
+}
+
+/* Foco visível para acessibilidade — todos os elementos interativos */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: 2px solid var(--cor-primaria);
+    outline-offset: 3px;
+    border-radius: 3px;
 }

@@ -1,152 +1,926 @@
 /*
  * custom.css — Viva Leve Child Theme
- * Estilos personalizados organizados por seção do site.
- * Use as variáveis CSS definidas em style.css para manter consistência visual.
+ * =========================================================
+ * Estilos completos organizados por seção.
+ * Usa exclusivamente as variáveis definidas em style.css.
+ * Mobile-first: base para mobile, media queries para tablet/desktop.
+ * Breakpoints: 768px (tablet) | 1024px (desktop)
+ * =========================================================
  */
 
 
 /* ===================================================
-   === Global
-   Estilos base aplicados em todo o site.
+   === UTILITÁRIOS
+   Classes reutilizáveis em qualquer página.
    =================================================== */
 
-body {
-    font-family: var(--fonte-principal);
-    color: var(--cor-texto);
-    background-color: var(--cor-fundo);
+.container {
+    width: 100%;
+    max-width: var(--largura-maxima);
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: var(--espacamento-base);
+    padding-right: var(--espacamento-base);
 }
 
-a {
+/* Botão primário reutilizável — aplique onde precisar de um CTA */
+.btn-primario {
+    display: inline-block;
+    background-color: var(--cor-primaria);
+    color: #fff;
+    font-family: var(--fonte-principal);
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 14px 32px;
+    border: none;
+    border-radius: var(--raio-borda);
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-primario:hover,
+.btn-primario:focus-visible {
+    background-color: var(--cor-primaria-hover);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(166, 124, 82, 0.25);
+}
+
+/* Transição global suave em todos os links e botões */
+a,
+button,
+input[type="submit"],
+input[type="button"] {
+    transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+}
+
+
+/* ===================================================
+   === HEADER
+   Fixo no topo. Contém logo, menu e busca.
+   =================================================== */
+
+.site-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background-color: var(--cor-fundo);
+    border-bottom: 1px solid var(--cor-borda);
+    box-shadow: 0 1px 6px rgba(61, 43, 31, 0.06);
+    transition: box-shadow 0.3s ease;
+}
+
+/* Sombra mais pronunciada ao rolar — classe adicionada via JS */
+.site-header.scrolled {
+    box-shadow: 0 4px 20px rgba(61, 43, 31, 0.14);
+}
+
+.site-header .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--espacamento-base);
+    padding: 0.75rem var(--espacamento-base);
+    max-width: var(--largura-maxima);
+    margin: 0 auto;
+}
+
+/* Compensa o header fixo no conteúdo da página */
+.site-main,
+.woocommerce-page .site-main {
+    padding-top: 80px;
+}
+
+/* --- Logo provisório em texto --- */
+.viva-leve-logo {
+    display: flex;
+    align-items: baseline;
+    text-decoration: none;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+.logo-viva {
+    font-family: var(--fonte-titulo);
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: var(--cor-primaria);
+    line-height: 1;
+}
+
+.logo-leve {
+    font-family: var(--fonte-principal);
+    font-size: 1.8rem;
+    font-weight: 300;
+    color: var(--cor-texto-suave);
+    margin-left: 6px;
+    line-height: 1;
+}
+
+.viva-leve-logo:hover .logo-viva,
+.viva-leve-logo:hover .logo-leve {
+    color: var(--cor-primaria-hover);
+}
+
+/* --- Navegação principal --- */
+.main-navigation {
+    display: none; /* oculto no mobile — aberto via JS */
+    width: 100%;
+}
+
+.main-navigation.menu-aberto {
+    display: block;
+}
+
+.main-navigation ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+}
+
+.main-navigation ul li a {
+    display: block;
+    padding: 0.6rem var(--espacamento-base);
+    color: var(--cor-texto);
+    font-size: 0.95rem;
+    text-decoration: none;
+    font-weight: 500;
+    border-bottom: 1px solid var(--cor-borda);
+}
+
+.main-navigation ul li a:hover,
+.main-navigation ul li.current-menu-item > a {
     color: var(--cor-primaria);
 }
 
-a:hover {
-    color: var(--cor-secundaria);
+/* --- Botão hamburguer --- */
+.btn-menu-hamburguer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 36px;
+    height: 36px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    flex-shrink: 0;
 }
 
-/* Botões principais (CTA, "Adicionar ao carrinho", "Finalizar pedido") */
-.button,
-button,
-input[type="submit"] {
+.btn-menu-hamburguer span {
+    display: block;
+    height: 2px;
+    background-color: var(--cor-texto);
+    border-radius: 2px;
+    transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+/* Animação do ícone hamburguer → X ao abrir o menu */
+.site-header.menu-aberto .btn-menu-hamburguer span:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+}
+
+.site-header.menu-aberto .btn-menu-hamburguer span:nth-child(2) {
+    opacity: 0;
+}
+
+.site-header.menu-aberto .btn-menu-hamburguer span:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+}
+
+/* --- Barra de busca compacta --- */
+.header-busca {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex: 1;
+    max-width: 320px;
+}
+
+.header-busca input[type="search"] {
+    width: 100%;
+    padding: 0.45rem 0.75rem;
+    border: 1px solid var(--cor-borda);
+    border-right: none;
+    border-radius: var(--raio-borda) 0 0 var(--raio-borda);
+    font-family: var(--fonte-principal);
+    font-size: 0.9rem;
+    color: var(--cor-texto);
+    background-color: var(--cor-fundo-card);
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.header-busca input[type="search"]:focus {
+    border-color: var(--cor-primaria);
+}
+
+.header-busca button[type="submit"] {
+    padding: 0.45rem 0.75rem;
     background-color: var(--cor-primaria);
-    color: #ffffff;
-    border-radius: var(--raio-borda);
+    color: #fff;
     border: none;
-    padding: 0.75rem var(--espacamento-base);
+    border-radius: 0 var(--raio-borda) var(--raio-borda) 0;
     cursor: pointer;
+    font-size: 0.9rem;
+    line-height: 1;
+}
+
+.header-busca button[type="submit"]:hover {
+    background-color: var(--cor-primaria-hover);
+}
+
+/* --- Ícone de carrinho com badge --- */
+.header-carrinho {
+    position: relative;
+    display: flex;
+    align-items: center;
+    color: var(--cor-texto);
+    text-decoration: none;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+}
+
+.header-carrinho:hover {
+    color: var(--cor-primaria);
+}
+
+/* Badge com quantidade de itens no carrinho */
+.carrinho-badge {
+    position: absolute;
+    top: -6px;
+    right: -8px;
+    background-color: var(--cor-primaria);
+    color: #fff;
+    font-family: var(--fonte-principal);
+    font-size: 0.65rem;
+    font-weight: 700;
+    min-width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+/* === Desktop: menu horizontal, hamburguer oculto === */
+@media (min-width: 768px) {
+    .btn-menu-hamburguer {
+        display: none;
+    }
+
+    .main-navigation {
+        display: block !important;
+        width: auto;
+        flex: 1;
+    }
+
+    .main-navigation ul {
+        flex-direction: row;
+        gap: 0.25rem;
+    }
+
+    .main-navigation ul li a {
+        padding: 0.5rem 0.85rem;
+        border-bottom: none;
+        border-radius: var(--raio-borda);
+    }
+
+    .main-navigation ul li a:hover {
+        background-color: var(--cor-secundaria);
+    }
+}
+
+
+/* ===================================================
+   === HERO / BANNER PRINCIPAL
+   Seção de boas-vindas na página inicial.
+   =================================================== */
+
+.viva-leve-hero {
+    background-color: var(--cor-secundaria);
+    padding: 60px var(--espacamento-base);
+    text-align: center;
+}
+
+.viva-leve-hero__titulo {
+    font-family: var(--fonte-titulo);
+    font-size: 2rem;
+    color: var(--cor-texto);
+    margin-bottom: 1rem;
+    line-height: 1.2;
+}
+
+.viva-leve-hero__subtitulo {
+    font-family: var(--fonte-principal);
+    font-size: 1.1rem;
+    color: var(--cor-texto-suave);
+    max-width: 520px;
+    margin: 0 auto 2rem;
+    line-height: 1.6;
+}
+
+.viva-leve-hero .btn-primario {
+    font-size: 1.05rem;
+}
+
+@media (min-width: 768px) {
+    .viva-leve-hero {
+        padding: 80px var(--espacamento-base);
+    }
+
+    .viva-leve-hero__titulo {
+        font-size: 2.8rem;
+    }
+}
+
+
+/* ===================================================
+   === SEÇÃO DE CATEGORIAS
+   Grid de cards de categoria de produto.
+   =================================================== */
+
+.secao-categorias {
+    padding: 3rem var(--espacamento-base);
+}
+
+.secao-categorias__titulo {
+    font-family: var(--fonte-titulo);
+    font-size: 1.6rem;
+    color: var(--cor-texto);
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+/* Grid mobile-first: 1 coluna → 2 tablet → 3 desktop */
+.grid-categorias {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+    max-width: var(--largura-maxima);
+    margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+    .grid-categorias {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .grid-categorias {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Card de categoria individual */
+.card-categoria {
+    background-color: var(--cor-fundo-card);
+    border: 1px solid var(--cor-borda);
+    border-radius: var(--raio-borda);
+    box-shadow: var(--sombra-card);
+    overflow: hidden;
+    text-align: center;
+    transition: box-shadow 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+    cursor: pointer;
+}
+
+.card-categoria:hover {
+    box-shadow: 0 6px 24px rgba(166, 124, 82, 0.15);
+    border-color: var(--cor-primaria);
+    transform: translateY(-2px);
+}
+
+.card-categoria__imagem {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+
+.card-categoria__nome {
+    font-family: var(--fonte-titulo);
+    font-size: 1.1rem;
+    color: var(--cor-texto);
+    padding: 1rem;
+}
+
+.card-categoria a {
+    color: var(--cor-texto);
+    text-decoration: none;
+}
+
+.card-categoria a:hover {
+    color: var(--cor-primaria);
+}
+
+/* Override para os cards de categoria gerados pelo WooCommerce */
+.woocommerce ul.products li.product-category .woocommerce-loop-category__title {
+    font-family: var(--fonte-titulo);
+    color: var(--cor-texto);
+}
+
+
+/* ===================================================
+   === VITRINE DE PRODUTOS
+   Grid de listagem — categoria, busca e home.
+   =================================================== */
+
+/* Grid: 2 colunas mobile → 3 tablet → 4 desktop */
+.woocommerce ul.products,
+.woocommerce-page ul.products {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+    list-style: none;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+@media (min-width: 768px) {
+    .woocommerce ul.products,
+    .woocommerce-page ul.products {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .woocommerce ul.products,
+    .woocommerce-page ul.products {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* Card de produto */
+.woocommerce ul.products li.product,
+.woocommerce-page ul.products li.product {
+    background-color: var(--cor-fundo-card);
+    border-radius: var(--raio-borda);
+    box-shadow: var(--sombra-card);
+    border: 1px solid transparent;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: box-shadow 0.25s ease, transform 0.25s ease, border-color 0.25s ease;
+    width: 100% !important; /* anula largura inline do Storefront */
+    margin: 0 !important;
+    float: none !important;
+}
+
+/* Animação de entrada — estado inicial (via JS + IntersectionObserver) */
+.woocommerce ul.products li.product:not(.visivel),
+.woocommerce-page ul.products li.product:not(.visivel) {
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+/* Estado visível após entrar na viewport */
+.woocommerce ul.products li.product.visivel,
+.woocommerce-page ul.products li.product.visivel {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.woocommerce ul.products li.product:hover,
+.woocommerce-page ul.products li.product:hover {
+    box-shadow: 0 8px 28px rgba(166, 124, 82, 0.16);
+    transform: translateY(-2px) scale(1.01);
+    border-color: var(--cor-borda);
+}
+
+/* Imagem do produto */
+.woocommerce ul.products li.product a img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    border-radius: var(--raio-borda) var(--raio-borda) 0 0;
+    display: block;
+}
+
+/* Título do produto */
+.woocommerce ul.products li.product .woocommerce-loop-product__title {
+    font-family: var(--fonte-titulo);
+    font-size: 0.95rem;
+    color: var(--cor-texto);
+    padding: 0.75rem 0.75rem 0.25rem;
+    margin: 0;
+    flex: 1;
+}
+
+/* Preço */
+.woocommerce ul.products li.product .price {
+    display: block;
+    padding: 0 0.75rem 0.5rem;
+    color: var(--cor-primaria);
+    font-size: 1.05rem;
+    font-weight: 700;
+    font-family: var(--fonte-principal);
+}
+
+/* Preço riscado (preço antigo) */
+.woocommerce ul.products li.product .price del {
+    color: var(--cor-texto-suave);
+    font-size: 0.85rem;
+    font-weight: 400;
+}
+
+/* Botão "Adicionar ao carrinho" */
+.woocommerce ul.products li.product .button,
+.woocommerce ul.products li.product a.button {
+    display: block;
+    width: calc(100% - 1.5rem);
+    margin: 0 0.75rem 0.75rem;
+    padding: 0.65rem;
+    background-color: var(--cor-primaria);
+    color: #fff;
+    font-family: var(--fonte-principal);
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-align: center;
+    border: none;
+    border-radius: var(--raio-borda);
+    cursor: pointer;
+    text-decoration: none;
     transition: background-color 0.2s ease;
 }
 
-.button:hover,
-button:hover,
-input[type="submit"]:hover {
-    background-color: var(--cor-secundaria);
-    color: var(--cor-texto);
+.woocommerce ul.products li.product .button:hover,
+.woocommerce ul.products li.product a.button:hover {
+    background-color: var(--cor-primaria-hover);
+    color: #fff;
+}
+
+/* Estado "Adicionado" — classe aplicada via JS */
+.woocommerce ul.products li.product .button.adicionado,
+.woocommerce ul.products li.product a.button.adicionado {
+    background-color: var(--cor-sucesso);
+    pointer-events: none;
 }
 
 
 /* ===================================================
-   === Header
-   Barra de topo, logo e navegação principal.
+   === PÁGINA DO PRODUTO
+   Layout individual com imagem e detalhes.
    =================================================== */
 
-/* Adicione aqui estilos do cabeçalho */
+/* Layout duas colunas no desktop */
+.woocommerce div.product {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
 
+@media (min-width: 768px) {
+    .woocommerce div.product {
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 3rem;
+    }
 
-/* ===================================================
-   === Vitrine de Produtos
-   Página de categoria, resultados de busca e grid de produtos.
-   =================================================== */
+    .woocommerce div.product .woocommerce-product-gallery {
+        flex: 1;
+        max-width: 50%;
+    }
 
-/* Cards de produto na vitrine */
-.woocommerce ul.products li.product {
+    .woocommerce div.product .summary {
+        flex: 1;
+    }
+}
+
+/* Título do produto */
+.woocommerce div.product .product_title {
+    font-family: var(--fonte-titulo);
+    font-size: 1.8rem;
+    color: var(--cor-texto);
+    margin-bottom: 0.75rem;
+}
+
+/* Preço em destaque */
+.woocommerce div.product p.price,
+.woocommerce div.product span.price {
+    color: var(--cor-primaria);
+    font-size: 1.8rem;
+    font-weight: 700;
+    font-family: var(--fonte-principal);
+    display: block;
+    margin-bottom: 1rem;
+}
+
+/* Botão de compra — maior que o da vitrine */
+.woocommerce div.product form.cart .single_add_to_cart_button {
+    background-color: var(--cor-primaria);
+    color: #fff;
+    border: none;
     border-radius: var(--raio-borda);
-    overflow: hidden;
-    transition: box-shadow 0.2s ease;
+    font-size: 1.05rem;
+    font-weight: 600;
+    padding: 16px 40px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
-.woocommerce ul.products li.product:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+.woocommerce div.product form.cart .single_add_to_cart_button:hover {
+    background-color: var(--cor-primaria-hover);
+    transform: translateY(-1px);
 }
 
-/* Título do produto na vitrine */
-.woocommerce ul.products li.product .woocommerce-loop-product__title {
-    font-size: 1rem;
+/* Breadcrumb */
+.woocommerce .woocommerce-breadcrumb {
+    font-size: 0.85rem;
+    color: var(--cor-texto-suave);
+    margin-bottom: 1.5rem;
+}
+
+.woocommerce .woocommerce-breadcrumb a {
+    color: var(--cor-texto-suave);
+}
+
+.woocommerce .woocommerce-breadcrumb a:hover {
+    color: var(--cor-primaria);
+}
+
+/* Seção de descrição do produto */
+.woocommerce div.product .woocommerce-tabs {
+    border-top: 1px solid var(--cor-borda);
+    padding-top: 2rem;
+    margin-top: 2rem;
+}
+
+.woocommerce div.product .woocommerce-tabs ul.tabs li.active a {
+    color: var(--cor-primaria);
+    border-bottom: 2px solid var(--cor-primaria);
+}
+
+.woocommerce div.product .woocommerce-tabs .panel {
+    padding: 1.5rem 0;
+    line-height: 1.8;
     color: var(--cor-texto);
 }
 
-/* Preço na vitrine */
-.woocommerce ul.products li.product .price {
+
+/* ===================================================
+   === CARRINHO
+   Tabela de itens, totais e botão de checkout.
+   =================================================== */
+
+.woocommerce-cart .woocommerce {
+    max-width: var(--largura-maxima);
+    margin: 0 auto;
+    padding: 0 var(--espacamento-base);
+}
+
+/* Tabela de itens */
+.woocommerce table.shop_table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+}
+
+.woocommerce table.shop_table th {
+    font-family: var(--fonte-titulo);
+    color: var(--cor-texto-suave);
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.75rem;
+    border-bottom: 2px solid var(--cor-borda);
+    text-align: left;
+}
+
+.woocommerce table.shop_table td {
+    padding: 1rem 0.75rem;
+    border-bottom: 1px solid var(--cor-borda);
+    vertical-align: middle;
+}
+
+/* Nome do produto no carrinho */
+.woocommerce table.shop_table td.product-name a {
+    color: var(--cor-texto);
+    font-weight: 500;
+}
+
+.woocommerce table.shop_table td.product-name a:hover {
+    color: var(--cor-primaria);
+}
+
+/* Preço e subtotal */
+.woocommerce table.shop_table td.product-price,
+.woocommerce table.shop_table td.product-subtotal {
     color: var(--cor-primaria);
     font-weight: 600;
 }
 
+/* Totais do carrinho */
+.woocommerce .cart-collaterals .cart_totals {
+    background-color: var(--cor-secundaria);
+    border-radius: var(--raio-borda);
+    padding: 1.5rem;
+}
 
-/* ===================================================
-   === Página do Produto
-   Imagem, galeria, descrição, preço e botão de compra.
-   =================================================== */
-
-/* Título do produto na página individual */
-.woocommerce div.product .product_title {
+.woocommerce .cart-collaterals .cart_totals h2 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
     color: var(--cor-texto);
 }
 
-/* Preço na página do produto */
-.woocommerce div.product p.price,
-.woocommerce div.product span.price {
-    color: var(--cor-primaria);
-    font-size: 1.5rem;
-    font-weight: 700;
+.woocommerce .cart-collaterals .cart_totals table {
+    width: 100%;
+    border-collapse: collapse;
 }
 
-/* Botão "Adicionar ao carrinho" */
-.woocommerce div.product form.cart .single_add_to_cart_button {
+.woocommerce .cart-collaterals .cart_totals table th,
+.woocommerce .cart-collaterals .cart_totals table td {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--cor-borda);
+    color: var(--cor-texto);
+}
+
+/* Botão "Finalizar meu pedido" */
+.woocommerce .wc-proceed-to-checkout .checkout-button {
+    display: block;
+    width: 100%;
     background-color: var(--cor-primaria);
+    color: #fff;
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: 600;
+    padding: 1rem;
     border-radius: var(--raio-borda);
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    margin-top: 1rem;
 }
 
-.woocommerce div.product form.cart .single_add_to_cart_button:hover {
-    background-color: var(--cor-secundaria);
+.woocommerce .wc-proceed-to-checkout .checkout-button:hover {
+    background-color: var(--cor-primaria-hover);
+    color: #fff;
+    transform: translateY(-1px);
 }
 
 
 /* ===================================================
-   === Carrinho
-   Tabela de itens, totais e botão de checkout.
-   =================================================== */
-
-/* Adicione aqui estilos da página de carrinho */
-
-
-/* ===================================================
-   === Checkout
+   === CHECKOUT
    Formulários de endereço, pagamento e confirmação.
    =================================================== */
 
-/* Campos de formulário no checkout */
+.woocommerce-checkout .woocommerce {
+    max-width: var(--largura-maxima);
+    margin: 0 auto;
+    padding: 0 var(--espacamento-base);
+}
+
+/* Labels do formulário */
+.woocommerce-checkout label,
+.woocommerce form .form-row label {
+    display: block;
+    font-family: var(--fonte-principal);
+    font-size: 0.9rem;
+    color: var(--cor-texto-suave);
+    margin-bottom: 0.3rem;
+    font-weight: 500;
+}
+
+/* Campos de input */
 .woocommerce-checkout input[type="text"],
 .woocommerce-checkout input[type="email"],
 .woocommerce-checkout input[type="tel"],
+.woocommerce-checkout input[type="password"],
+.woocommerce-checkout input[type="number"],
 .woocommerce-checkout select,
 .woocommerce-checkout textarea {
+    width: 100%;
+    padding: 0.65rem var(--espacamento-base);
+    border: 1px solid var(--cor-borda);
     border-radius: var(--raio-borda);
-    border: 1px solid #cccccc;
-    padding: 0.6rem var(--espacamento-base);
+    font-family: var(--fonte-principal);
+    font-size: 0.95rem;
+    color: var(--cor-texto);
+    background-color: var(--cor-fundo-card);
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .woocommerce-checkout input:focus,
 .woocommerce-checkout select:focus,
 .woocommerce-checkout textarea:focus {
     border-color: var(--cor-primaria);
-    outline: none;
-    box-shadow: 0 0 0 2px rgba(91, 164, 160, 0.2);
+    box-shadow: 0 0 0 3px rgba(166, 124, 82, 0.15);
+}
+
+/* Botão de confirmação do pedido */
+#place_order {
+    display: block;
+    width: 100%;
+    background-color: var(--cor-primaria);
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 600;
+    padding: 1rem;
+    border: none;
+    border-radius: var(--raio-borda);
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+#place_order:hover {
+    background-color: var(--cor-primaria-hover);
+    transform: translateY(-1px);
+}
+
+/* Títulos das seções do checkout */
+.woocommerce-checkout h3 {
+    font-family: var(--fonte-titulo);
+    color: var(--cor-texto);
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--cor-borda);
 }
 
 
 /* ===================================================
-   === Rodapé
-   Widgets, créditos e links secundários.
+   === RODAPÉ
+   Três colunas com fundo marrom escuro.
    =================================================== */
 
-/* Adicione aqui estilos do rodapé */
+.site-footer {
+    background-color: var(--cor-texto);
+    color: #fff;
+    padding: 3rem var(--espacamento-base) 1.5rem;
+    margin-top: 4rem;
+}
+
+.footer-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    max-width: var(--largura-maxima);
+    margin: 0 auto 2rem;
+}
+
+@media (min-width: 768px) {
+    .footer-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.footer-coluna__titulo {
+    font-family: var(--fonte-titulo);
+    font-size: 1rem;
+    color: var(--cor-secundaria);
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.footer-coluna p,
+.footer-coluna address {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.75);
+    line-height: 1.7;
+    font-style: normal;
+}
+
+.footer-coluna ul {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-coluna ul li {
+    margin-bottom: 0.4rem;
+}
+
+.footer-coluna ul li a,
+.site-footer a {
+    color: rgba(255, 255, 255, 0.75);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.2s ease;
+}
+
+.footer-coluna ul li a:hover,
+.site-footer a:hover {
+    color: var(--cor-secundaria);
+}
+
+/* Copyright */
+.footer-copyright {
+    text-align: center;
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.45);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 1.5rem;
+    max-width: var(--largura-maxima);
+    margin: 0 auto;
+}
