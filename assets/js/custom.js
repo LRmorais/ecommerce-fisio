@@ -41,19 +41,33 @@ document.addEventListener( 'DOMContentLoaded', function () {
 
 
     // =========================================================
+    // === PADDING-TOP DINÂMICO
+    // Mede a altura real do header e aplica como variável CSS
+    // --altura-header, usada no padding-top do conteúdo.
+    // Roda no carregamento e a cada resize para cobrir mudanças
+    // de layout (abertura do nav, redimensionamento de janela).
+    // =========================================================
+
+    function ajustarPaddingHeader() {
+        if ( ! header ) return;
+        document.documentElement.style.setProperty(
+            '--altura-header',
+            header.offsetHeight + 'px'
+        );
+    }
+
+    ajustarPaddingHeader();
+    window.addEventListener( 'resize', ajustarPaddingHeader, { passive: true } );
+
+
+    // =========================================================
     // === HEADER COM SOMBRA AO ROLAR
-    // Adiciona a classe .scrolled no header quando o usuário
-    // rola mais de 50px — o CSS aplica sombra mais intensa.
     // =========================================================
 
     if ( header ) {
         window.addEventListener( 'scroll', function () {
-            if ( window.scrollY > 50 ) {
-                header.classList.add( 'scrolled' );
-            } else {
-                header.classList.remove( 'scrolled' );
-            }
-        }, { passive: true } ); // passive: true melhora a performance no scroll
+            header.classList.toggle( 'scrolled', window.scrollY > 50 );
+        }, { passive: true } );
     }
 
 

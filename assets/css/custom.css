@@ -311,10 +311,10 @@ input[type="button"] {
     background-color: var(--cor-secundaria);
 }
 
-/* Compensa o header fixo (mobile: só linha 1) */
+/* Compensa o header fixo — valor atualizado dinamicamente pelo JS */
 .site-main,
 .woocommerce-page .site-main {
-    padding-top: 66px;
+    padding-top: var(--altura-header, 66px);
 }
 
 /* ======================================
@@ -342,8 +342,15 @@ input[type="button"] {
     /* Busca centralizada com largura generosa */
     .vl-busca {
         display: flex;
+        align-items: center;
+        align-self: center;
         justify-self: center;
         width: clamp(280px, 38vw, 520px);
+    }
+
+    .vl-busca .woocommerce-product-search {
+        margin: 0;
+        width: 100%;
     }
 
     /* Ações alinhadas à direita */
@@ -387,11 +394,7 @@ input[type="button"] {
         border-bottom-color: var(--cor-primaria);
     }
 
-    /* Compensa header de duas linhas no desktop */
-    .site-main,
-    .woocommerce-page .site-main {
-        padding-top: 112px;
-    }
+    /* padding-top gerenciado pelo JS via --altura-header */
 }
 
 
