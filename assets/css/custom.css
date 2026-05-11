@@ -311,6 +311,20 @@ input[type="button"] {
     background-color: var(--cor-secundaria);
 }
 
+/* Sub-menu mobile: indentado abaixo do pai */
+.vl-menu .sub-menu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.vl-menu .sub-menu li a {
+    padding-left: calc(var(--espacamento-base) * 2);
+    font-size: 0.9rem;
+    font-weight: 400;
+    background-color: var(--cor-secundaria);
+}
+
 /* Compensa o header fixo — valor atualizado dinamicamente pelo JS */
 .site-main,
 .woocommerce-page .site-main {
@@ -394,6 +408,54 @@ input[type="button"] {
         border-bottom-color: var(--cor-primaria);
     }
 
+    /* Dropdown desktop */
+    .vl-menu .menu-item-has-children {
+        position: relative;
+    }
+
+    .vl-menu .sub-menu {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        min-width: 180px;
+        background-color: #fff;
+        border: 1px solid var(--cor-borda);
+        border-top: 2px solid var(--cor-primaria);
+        border-radius: 0 0 6px 6px;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+        z-index: 200;
+    }
+
+    .vl-menu .menu-item-has-children:hover > .sub-menu,
+    .vl-menu .menu-item-has-children:focus-within > .sub-menu {
+        display: block;
+    }
+
+    .vl-menu .sub-menu li {
+        display: block;
+        width: 100%;
+    }
+
+    .vl-menu .sub-menu li a {
+        padding: 0.6rem 1rem;
+        font-size: 0.88rem;
+        font-weight: 400;
+        border-bottom: 1px solid var(--cor-borda);
+        background-color: transparent;
+        white-space: nowrap;
+    }
+
+    .vl-menu .sub-menu li:last-child a {
+        border-bottom: none;
+    }
+
+    .vl-menu .sub-menu li a:hover {
+        background-color: var(--cor-secundaria);
+        color: var(--cor-primaria);
+        border-bottom-color: var(--cor-borda);
+    }
+
     /* padding-top gerenciado pelo JS via --altura-header */
 }
 
@@ -438,6 +500,752 @@ input[type="button"] {
     .viva-leve-hero__titulo {
         font-size: 2.8rem;
     }
+}
+
+
+/* ===================================================
+   === SLIDER DE BANNERS
+   Carrossel de imagens full-width na página inicial.
+   Dots ficam abaixo do banner, dentro de .vl-slider-wrap.
+   =================================================== */
+
+/* Wrapper quebra o container do Storefront para ocupar 100vw */
+.vl-slider-wrap {
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    margin-left: -50vw;
+    background-color: #111;
+    margin-bottom: 2rem;
+}
+
+/* Área das imagens */
+.vl-slider {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    line-height: 0;
+}
+
+/* Cada slide: oculto por padrão */
+.vl-slide {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0;
+    transition: opacity 0.7s ease;
+}
+
+/* Slide ativo: fica em fluxo normal para definir a altura do container */
+.vl-slide--ativo {
+    position: relative;
+    opacity: 1;
+    z-index: 1;
+    min-height: 320px;
+}
+
+@media (min-width: 768px) {
+    .vl-slide--ativo {
+        min-height: 480px;
+    }
+}
+
+/* Dots abaixo do banner */
+.vl-slider-dots {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    padding: 0.85rem 0;
+    background-color: #fff;
+}
+
+.vl-slider-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #ccc;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.vl-slider-dot--ativo {
+    background-color: var(--cor-primaria);
+    transform: scale(1.3);
+}
+
+/* Remove padding-top da home — slider colado ao header */
+.vl-home-main {
+    padding-top: 0;
+}
+
+
+/* ===================================================
+   === BARRA DE BENEFÍCIOS
+   3 diferenciais exibidos abaixo do slider.
+   =================================================== */
+
+.vl-beneficios {
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    margin-left: -50vw;
+    background-color: #fff;
+    border-top: 1px solid var(--cor-borda);
+    border-bottom: 1px solid var(--cor-borda);
+}
+
+.vl-beneficios-inner {
+    display: flex;
+    flex-direction: column;
+    max-width: var(--largura-maxima);
+    margin: 0 auto;
+    padding: 0 var(--espacamento-base);
+}
+
+.vl-beneficio {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.25rem 0;
+    border-bottom: 1px solid var(--cor-borda);
+}
+
+.vl-beneficio:last-child {
+    border-bottom: none;
+}
+
+.vl-beneficio-icone {
+    flex-shrink: 0;
+    color: var(--cor-primaria);
+    display: flex;
+}
+
+.vl-beneficio-texto {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.vl-beneficio-titulo {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--cor-texto);
+}
+
+.vl-beneficio-descricao {
+    font-size: 0.85rem;
+    color: var(--cor-texto-suave);
+    line-height: 1.4;
+}
+
+@media (min-width: 768px) {
+    .vl-beneficios-inner {
+        flex-direction: row;
+    }
+
+    .vl-beneficio {
+        flex: 1;
+        flex-direction: column;
+        text-align: center;
+        padding: 2rem 1.5rem;
+        border-bottom: none;
+        border-right: 1px solid var(--cor-borda);
+    }
+
+    .vl-beneficio:last-child {
+        border-right: none;
+    }
+
+    .vl-beneficio-texto {
+        align-items: center;
+    }
+}
+
+
+/* ===================================================
+   === CATEGORIAS VISUAIS — PÁGINA INICIAL
+   Cards com imagem de fundo, nome e CTA ao hover.
+   =================================================== */
+
+.vl-categorias-home {
+    padding: 3rem 0 0;
+}
+
+.vl-categorias-home-inner {
+    max-width: var(--largura-maxima);
+    margin: 0 auto;
+    padding: 0 var(--espacamento-base);
+}
+
+.vl-categorias-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+/* 3 colunas iguais no desktop */
+@media (min-width: 768px) {
+    .vl-categorias-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.25rem;
+    }
+
+    /* Se houver só 2 categorias, cada uma ocupa metade */
+    .vl-categorias-grid[data-total="2"] {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* Se houver 4, duas linhas de 2 */
+    .vl-categorias-grid[data-total="4"] {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Card individual */
+.vl-categoria-card {
+    position: relative;
+    display: block;
+    aspect-ratio: 4 / 3;
+    background-size: cover;
+    background-position: center;
+    border-radius: 8px;
+    overflow: hidden;
+    text-decoration: none;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.vl-categoria-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.18);
+}
+
+/* Fallback sem imagem: usa cor primária como fundo */
+.vl-categoria-card--sem-imagem {
+    background-color: var(--cor-primaria);
+}
+
+.vl-categoria-card--sem-imagem .vl-categoria-card-overlay {
+    background: rgba(0, 0, 0, 0.15);
+}
+
+/* Overlay escurece a imagem para o texto ficar legível */
+.vl-categoria-card-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.1) 55%, transparent 100%);
+    transition: background 0.3s ease;
+}
+
+.vl-categoria-card:hover .vl-categoria-card-overlay {
+    background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.2) 55%, transparent 100%);
+}
+
+/* Texto na parte inferior do card */
+.vl-categoria-card-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 1rem 1.1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.vl-categoria-card-nome {
+    display: block;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.2;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.4);
+}
+
+.vl-categoria-card-cta {
+    display: block;
+    color: rgba(255,255,255,0.85);
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.vl-categoria-card:hover .vl-categoria-card-cta {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+@media (min-width: 768px) {
+    .vl-categoria-card-nome {
+        font-size: 1.15rem;
+    }
+}
+
+
+/* ===================================================
+   === PRODUTOS — PÁGINA INICIAL
+   Grade de produtos com cabeçalho e link "Ver todos".
+   =================================================== */
+
+.vl-produtos-home {
+    padding: 3rem 0 2rem;
+}
+
+.vl-produtos-home-inner {
+    max-width: var(--largura-maxima);
+    margin: 0 auto;
+    padding: 0 var(--espacamento-base);
+}
+
+.vl-secao-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 1.75rem;
+    gap: 1rem;
+}
+
+.vl-secao-titulo {
+    font-family: var(--fonte-titulo);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--cor-texto);
+    margin: 0;
+}
+
+.vl-ver-todos {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--cor-primaria);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: opacity 0.2s;
+}
+
+.vl-ver-todos:hover {
+    opacity: 0.75;
+}
+
+@media (min-width: 768px) {
+    .vl-secao-titulo {
+        font-size: 1.8rem;
+    }
+}
+
+
+/* ===================================================
+   === SOBRE A MARCA
+   Seção de duas colunas: imagem + texto/valores.
+   =================================================== */
+
+.vl-sobre-marca {
+    padding: 4rem 0;
+    background-color: #fff;
+}
+
+.vl-sobre-marca-inner {
+    max-width: var(--largura-maxima);
+    margin: 0 auto;
+    padding: 0 var(--espacamento-base);
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+}
+
+@media (min-width: 768px) {
+    .vl-sobre-marca-inner {
+        flex-direction: row;
+        align-items: center;
+        gap: 4rem;
+    }
+}
+
+/* Coluna da imagem */
+.vl-sobre-imagem-wrap {
+    flex: 0 0 auto;
+    width: 100%;
+}
+
+@media (min-width: 768px) {
+    .vl-sobre-imagem-wrap {
+        width: 44%;
+    }
+}
+
+.vl-sobre-imagem {
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+    object-fit: cover;
+    display: block;
+    aspect-ratio: 4 / 3;
+}
+
+.vl-sobre-imagem-placeholder {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    border-radius: 12px;
+    background-color: var(--cor-secundaria);
+    border: 2px dashed var(--cor-borda);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    color: var(--cor-texto-suave);
+    text-align: center;
+    padding: 2rem;
+}
+
+.vl-sobre-imagem-placeholder svg {
+    opacity: 0.35;
+}
+
+.vl-sobre-imagem-placeholder p {
+    font-size: 0.85rem;
+    margin: 0;
+    opacity: 0.7;
+}
+
+/* Coluna do conteúdo */
+.vl-sobre-conteudo {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+}
+
+.vl-sobre-badge {
+    display: inline-block;
+    background-color: var(--cor-secundaria);
+    color: var(--cor-primaria);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.3rem 0.85rem;
+    border-radius: 20px;
+    align-self: flex-start;
+}
+
+.vl-sobre-titulo {
+    font-family: var(--fonte-titulo);
+    font-size: 1.7rem;
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--cor-texto);
+    margin: 0;
+}
+
+@media (min-width: 768px) {
+    .vl-sobre-titulo {
+        font-size: 2.1rem;
+    }
+}
+
+.vl-sobre-texto {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--cor-texto-suave);
+    margin: 0;
+}
+
+/* Lista de valores */
+.vl-sobre-valores {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+}
+
+.vl-sobre-valores li {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.95rem;
+    color: var(--cor-texto);
+    font-weight: 500;
+}
+
+.vl-sobre-valores-icone {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: var(--cor-primaria);
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.vl-sobre-btn {
+    align-self: flex-start;
+    margin-top: 0.5rem;
+}
+
+
+/* ===================================================
+   === DEPOIMENTOS DE CLIENTES
+   Grade de cards com texto, estrelas e autor.
+   =================================================== */
+
+.vl-depoimentos {
+    padding: 3.5rem 0;
+    background-color: var(--cor-secundaria);
+}
+
+.vl-depoimentos-inner {
+    max-width: var(--largura-maxima);
+    margin: 0 auto;
+    padding: 0 var(--espacamento-base);
+}
+
+.vl-secao-header--centro {
+    justify-content: center;
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.vl-depoimentos-grade {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+}
+
+@media (min-width: 600px) {
+    .vl-depoimentos-grade {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 960px) {
+    .vl-depoimentos-grade {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.vl-depoimento-card {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.vl-depoimento-card:hover {
+    box-shadow: 0 6px 24px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+}
+
+/* Estrelas */
+.vl-depoimento-estrelas {
+    display: flex;
+    gap: 2px;
+}
+
+.vl-estrela {
+    font-size: 1.1rem;
+    color: #ddd;
+    line-height: 1;
+}
+
+.vl-estrela--cheia {
+    color: #f5a623;
+}
+
+/* Texto */
+.vl-depoimento-texto {
+    margin: 0;
+    padding: 0;
+    border: none;
+    font-size: 0.93rem;
+    line-height: 1.65;
+    color: var(--cor-texto);
+    flex: 1;
+}
+
+.vl-depoimento-texto p {
+    margin: 0;
+}
+
+/* Autor */
+.vl-depoimento-autor {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    border-top: 1px solid var(--cor-borda);
+    padding-top: 1rem;
+    margin: 0;
+}
+
+.vl-depoimento-foto {
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.vl-depoimento-foto img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* Avatar com inicial quando não há foto */
+.vl-depoimento-foto--inicial {
+    background-color: var(--cor-primaria);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.vl-depoimento-foto--inicial span {
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 700;
+    line-height: 1;
+    text-transform: uppercase;
+}
+
+.vl-depoimento-autor-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.vl-depoimento-nome {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--cor-texto);
+}
+
+.vl-depoimento-cargo {
+    font-size: 0.8rem;
+    color: var(--cor-texto-suave);
+}
+
+
+/* ===================================================
+   === FAQ
+   Acordeão com animação de altura via JS + CSS.
+   =================================================== */
+
+.vl-faq {
+    padding: 3.5rem 0;
+    background-color: #fff;
+}
+
+.vl-faq-inner {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 var(--espacamento-base);
+}
+
+.vl-faq-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border: 1px solid var(--cor-borda);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.vl-faq-item {
+    border-bottom: 1px solid var(--cor-borda);
+}
+
+.vl-faq-item:last-child {
+    border-bottom: none;
+}
+
+/* Botão da pergunta */
+.vl-faq-pergunta {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.1rem 1.35rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    font-size: 0.97rem;
+    font-weight: 600;
+    color: var(--cor-texto);
+    line-height: 1.4;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.vl-faq-pergunta:hover {
+    background-color: var(--cor-secundaria);
+    color: var(--cor-primaria);
+}
+
+.vl-faq-pergunta[aria-expanded="true"] {
+    color: var(--cor-primaria);
+    background-color: var(--cor-secundaria);
+}
+
+/* Ícone de seta */
+.vl-faq-icone {
+    flex-shrink: 0;
+    display: flex;
+    transition: transform 0.3s ease;
+    color: var(--cor-primaria);
+    opacity: 0.7;
+}
+
+.vl-faq-pergunta[aria-expanded="true"] .vl-faq-icone {
+    transform: rotate(180deg);
+    opacity: 1;
+}
+
+/* Painel de resposta — animado via JS (max-height) */
+.vl-faq-resposta {
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.35s ease;
+}
+
+.vl-faq-resposta[hidden] {
+    display: block; /* mantém o elemento no DOM para a animação funcionar */
+    visibility: hidden;
+}
+
+.vl-faq-resposta.aberto {
+    visibility: visible;
+}
+
+.vl-faq-resposta-inner {
+    padding: 0 1.35rem 1.25rem;
+    font-size: 0.93rem;
+    line-height: 1.7;
+    color: var(--cor-texto-suave);
+}
+
+.vl-faq-resposta-inner p {
+    margin: 0 0 0.75rem;
+}
+
+.vl-faq-resposta-inner p:last-child {
+    margin-bottom: 0;
 }
 
 
@@ -1020,4 +1828,686 @@ input[type="button"] {
     padding-top: 1.5rem;
     max-width: var(--largura-maxima);
     margin: 0 auto;
+}
+
+
+/* ===================================================
+   === RODAPÉ VIVA LEVE
+   4 colunas no desktop, empilhado no mobile.
+   Corpo escuro + barra inferior mais escura.
+   =================================================== */
+
+.vl-footer {
+    background-color: #1a1a1a;
+    color: rgba(255,255,255,0.8);
+    font-size: 0.9rem;
+    margin-top: 0;
+}
+
+/* ── Corpo principal ── */
+.vl-footer-corpo {
+    padding: 3.5rem 0 2.5rem;
+}
+
+.vl-footer-inner {
+    max-width: var(--largura-maxima);
+    margin: 0 auto;
+    padding: 0 var(--espacamento-base);
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+}
+
+@media (min-width: 600px) {
+    .vl-footer-inner {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 960px) {
+    .vl-footer-inner {
+        grid-template-columns: 1.6fr 1fr 1fr 1.1fr 1fr;
+        gap: 2rem;
+    }
+}
+
+/* ── Coluna da marca ── */
+.vl-footer .vl-footer-logo-texto {
+    display: inline-flex;
+    gap: 0.15em;
+    text-decoration: none;
+    font-family: var(--fonte-titulo);
+    font-size: 1.8rem;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 0.75rem;
+}
+
+.vl-footer .vl-footer-logo-texto .logo-viva { color: #fff; }
+.vl-footer .vl-footer-logo-texto .logo-leve { color: var(--cor-primaria); }
+
+.vl-footer .vl-footer-logo img {
+    max-height: 48px;
+    width: auto;
+    filter: brightness(0) invert(1);
+    margin-bottom: 0.75rem;
+    display: block;
+}
+
+.vl-footer .vl-footer-tagline {
+    color: #d0d0d0;
+    font-size: 0.88rem;
+    line-height: 1.6;
+    margin: 0 0 1.25rem;
+    max-width: 260px;
+}
+
+/* Redes sociais */
+.vl-footer .vl-footer-social {
+    display: flex;
+    gap: 0.6rem;
+}
+
+.vl-footer .vl-social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: rgba(255,255,255,0.1);
+    color: #d0d0d0;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    text-decoration: none;
+}
+
+.vl-footer .vl-social-link:hover {
+    background-color: var(--cor-primaria);
+    color: #fff;
+}
+
+/* ── Títulos das colunas ── */
+.vl-footer .vl-footer-col-titulo {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #fff;
+    margin: 0 0 1.1rem;
+}
+
+/* ── Reset geral de links no footer (vence .site-footer a do Storefront) ── */
+#colophon.vl-footer a {
+    color: #c8c8c8;
+    text-decoration: none;
+}
+
+#colophon.vl-footer a:hover {
+    color: #fff;
+    text-decoration: none;
+}
+
+/* ── Links das colunas ── */
+.vl-footer .vl-footer-links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+}
+
+.vl-footer .vl-footer-links a {
+    font-size: 0.88rem;
+    transition: color 0.2s ease;
+}
+
+/* ── Coluna de contato ── */
+.vl-footer .vl-footer-contato {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+}
+
+.vl-footer .vl-footer-contato-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    font-size: 0.88rem;
+    color: #c8c8c8;
+    line-height: 1.5;
+}
+
+.vl-footer .vl-footer-contato-icone {
+    flex-shrink: 0;
+    margin-top: 2px;
+    color: #c8c8c8;
+}
+
+/* ── Barra inferior ── */
+.vl-footer-barra {
+    background-color: #111;
+    border-top: 1px solid rgba(255,255,255,0.07);
+    padding: 1.1rem 0;
+}
+
+.vl-footer-barra-inner {
+    max-width: var(--largura-maxima);
+    margin: 0 auto;
+    padding: 0 var(--espacamento-base);
+    text-align: center;
+}
+
+.vl-footer .vl-footer-copy {
+    margin: 0;
+    font-size: 0.82rem;
+    color: #999;
+}
+
+#colophon.vl-footer .vl-footer-copy a {
+    color: #bbb;
+    transition: color 0.2s ease;
+}
+
+#colophon.vl-footer .vl-footer-copy a:hover {
+    color: #fff;
+}
+
+/* ── Selos de pagamento — coluna vertical ── */
+.vl-footer .vl-footer-selos {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+}
+
+.vl-footer .vl-footer-selo {
+    display: inline-block;
+    padding: 0.28rem 0.75rem;
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 4px;
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: #c8c8c8;
+    width: fit-content;
+}
+
+
+/* ===================================================
+   === PÁGINA DE PRODUTO — ALTA CONVERSÃO
+   =================================================== */
+
+/* Layout full-width sem sidebar */
+.single-product .site-main {
+    max-width: var(--largura-maxima);
+    margin: 0 auto;
+    padding: 1.5rem var(--espacamento-base) 3rem;
+}
+
+/* Reset de floats do WooCommerce que interferem no layout */
+.single-product div.product div.images,
+.single-product div.product .woocommerce-product-gallery,
+.single-product div.product .summary {
+    float: none !important;
+    width: 100% !important;
+    clear: none !important;
+    max-width: none !important;
+}
+
+/* Layout em duas colunas: galeria + resumo */
+.single-product div.product {
+    display: grid !important;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    align-items: start;
+    position: relative;
+}
+
+@media (min-width: 768px) {
+    .single-product div.product {
+        grid-template-columns: 55fr 45fr;
+        gap: 3.5rem;
+    }
+}
+
+/* Badge de promoção fora do fluxo do grid para não empurrar a galeria */
+.single-product div.product .onsale {
+    display: none;
+}
+
+/* Galeria: fixada na primeira coluna/linha, alinhada ao topo */
+.single-product div.product div.images {
+    grid-column: 1;
+    grid-row: 1;
+    align-self: start;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Reset nos wrappers internos do WooCommerce que adicionam espaço */
+.single-product div.product .woocommerce-product-gallery {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.single-product div.product .woocommerce-product-gallery__wrapper {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Imagem principal ocupa toda a largura disponível */
+.single-product div.product div.images .woocommerce-product-gallery__image img,
+.single-product div.product div.images .woocommerce-product-gallery__image:first-child img {
+    width: 100%;
+    height: auto;
+    max-height: 560px;
+    object-fit: contain;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+/* Thumbnails maiores */
+.single-product div.product div.images .flex-control-thumbs {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.single-product div.product div.images .flex-control-thumbs li {
+    flex: 0 0 auto;
+    width: 72px;
+    margin: 0;
+}
+
+.single-product div.product div.images .flex-control-thumbs img {
+    border-radius: 6px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    object-fit: cover;
+    height: 72px;
+}
+
+.single-product div.product div.images .flex-control-thumbs .flex-active img,
+.single-product div.product div.images .flex-control-thumbs img:hover {
+    border-color: var(--cor-primaria);
+}
+
+/* Resumo: coluna 2 em desktop, alinhado ao topo da galeria */
+.single-product div.product .summary.entry-summary {
+    grid-column: 1;
+    grid-row: 2;
+    margin: 0 !important;
+}
+
+@media (min-width: 768px) {
+    .single-product div.product .summary.entry-summary {
+        grid-column: 2;
+        grid-row: 1;
+    }
+}
+
+/* Abas e produtos relacionados ocupam linha inteira */
+.single-product .woocommerce-tabs,
+.single-product section.related,
+.single-product section.upsells {
+    grid-column: 1 / -1;
+}
+
+/* ── Título ── */
+.single-product .product_title {
+    font-family: var(--fonte-titulo);
+    font-size: 1.6rem;
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--cor-texto);
+    margin: 0 0 0.5rem;
+}
+
+@media (min-width: 768px) {
+    .single-product .product_title {
+        font-size: 2rem;
+    }
+}
+
+/* ── Avaliações ── */
+.single-product .woocommerce-product-rating {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.single-product .star-rating {
+    font-size: 1rem;
+    color: #f5a623;
+}
+
+.single-product .woocommerce-review-link {
+    font-size: 0.85rem;
+    color: var(--cor-texto-suave);
+}
+
+/* ── Preço ── */
+.single-product p.price,
+.single-product span.price {
+    font-size: 1.75rem !important;
+    font-weight: 700;
+    color: var(--cor-primaria) !important;
+    margin: 0.75rem 0 1rem;
+    display: block;
+}
+
+.single-product p.price del,
+.single-product span.price del {
+    font-size: 1.1rem;
+    color: var(--cor-texto-suave) !important;
+    font-weight: 400;
+    margin-right: 0.4rem;
+}
+
+.single-product p.price ins,
+.single-product span.price ins {
+    text-decoration: none;
+}
+
+/* ── Descrição curta ── */
+.single-product .woocommerce-product-details__short-description {
+    font-size: 0.97rem;
+    line-height: 1.7;
+    color: var(--cor-texto-suave);
+    border-left: 3px solid var(--cor-primaria);
+    padding-left: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+/* ── Urgência de estoque ── */
+.vl-estoque-urgencia {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.88rem;
+    font-weight: 600;
+    padding: 0.5rem 0.85rem;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+}
+
+.vl-estoque--baixo {
+    background-color: #fff8e1;
+    color: #e65100;
+    border: 1px solid #ffcc80;
+}
+
+.vl-estoque--critico {
+    background-color: #ffebee;
+    color: #c62828;
+    border: 1px solid #ef9a9a;
+    animation: vl-pulsar 1.8s ease-in-out infinite;
+}
+
+@keyframes vl-pulsar {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.7; }
+}
+
+/* ── Wrapper dos botões de compra ── */
+.vl-botoes-compra {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 0.25rem;
+}
+
+/* ── Formulário: quantidade + botão em linha ── */
+.single-product form.cart {
+    display: flex !important;
+    align-items: stretch;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.single-product form.cart .quantity {
+    flex: 0 0 auto;
+}
+
+.single-product form.cart input.qty {
+    height: 100%;
+    min-height: 52px;
+    width: 72px;
+    text-align: center;
+    font-size: 1.05rem;
+    font-weight: 600;
+    border: 2px solid var(--cor-borda);
+    border-radius: 8px;
+    padding: 0 0.5rem;
+    -moz-appearance: textfield;
+}
+
+.single-product form.cart input.qty::-webkit-inner-spin-button,
+.single-product form.cart input.qty::-webkit-outer-spin-button {
+    opacity: 1;
+}
+
+.single-product form.cart .single_add_to_cart_button {
+    flex: 1;
+    min-width: 0;
+}
+
+/* ── Botão add-to-cart ── */
+.single-product .single_add_to_cart_button.button {
+    width: 100%;
+    padding: 1.1rem 2rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    border-radius: 8px;
+    background-color: var(--cor-primaria);
+    color: #fff;
+    border: none;
+    transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+}
+
+.single-product .single_add_to_cart_button.button:hover {
+    background-color: var(--cor-primaria-escura, #3a7a1e);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+}
+
+/* ── Botão WhatsApp ── */
+.vl-btn-whatsapp {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    width: 100%;
+    padding: 1.1rem 2rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    border-radius: 8px;
+    background-color: #25d366;
+    color: #fff !important;
+    text-decoration: none !important;
+    border: none;
+    transition: background-color 0.2s ease, transform 0.15s ease;
+    box-shadow: 0 4px 14px rgba(37,211,102,0.3);
+    cursor: pointer;
+}
+
+.vl-btn-whatsapp:hover {
+    background-color: #1ebe5a;
+    transform: translateY(-2px);
+}
+
+/* ── Selos de confiança ── */
+.vl-produto-selos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem 1.25rem;
+    padding: 1rem 0;
+    border-top: 1px solid var(--cor-borda);
+    border-bottom: 1px solid var(--cor-borda);
+    margin: 1rem 0;
+}
+
+.vl-produto-selo {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--cor-texto-suave);
+}
+
+.vl-produto-selo svg {
+    color: var(--cor-primaria);
+    flex-shrink: 0;
+}
+
+/* ── Meta (SKU, categorias) ── */
+.single-product .product_meta {
+    font-size: 0.85rem;
+    color: var(--cor-texto-suave);
+    margin-top: 0.5rem;
+}
+
+/* ── Abas ── */
+.single-product .woocommerce-tabs ul.tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 2px solid var(--cor-borda);
+    padding: 0;
+    margin: 0 0 1.5rem;
+    list-style: none;
+}
+
+.single-product .woocommerce-tabs ul.tabs li {
+    margin: 0;
+    border: none;
+    background: none;
+}
+
+.single-product .woocommerce-tabs ul.tabs li a {
+    display: block;
+    padding: 0.75rem 1.25rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--cor-texto-suave);
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: color 0.2s, border-color 0.2s;
+}
+
+.single-product .woocommerce-tabs ul.tabs li.active a,
+.single-product .woocommerce-tabs ul.tabs li a:hover {
+    color: var(--cor-primaria);
+    border-bottom-color: var(--cor-primaria);
+}
+
+.single-product .woocommerce-tabs .panel {
+    padding: 0;
+}
+
+/* ── Produtos relacionados ── */
+.single-product section.related h2,
+.single-product section.upsells h2 {
+    font-family: var(--fonte-titulo);
+    font-size: 1.4rem;
+    color: var(--cor-texto);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--cor-borda);
+}
+
+/* ── Barra sticky de compra ── */
+.vl-sticky-bar {
+    position: fixed;
+    bottom: -100px;
+    left: 0;
+    right: 0;
+    z-index: 500;
+    background-color: #fff;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.12);
+    transition: bottom 0.35s ease;
+    border-top: 1px solid var(--cor-borda);
+}
+
+.vl-sticky-bar.visivel {
+    bottom: 0;
+}
+
+.vl-sticky-bar-inner {
+    max-width: var(--largura-maxima);
+    margin: 0 auto;
+    padding: 0.75rem var(--espacamento-base);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.vl-sticky-bar-produto {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-width: 0;
+}
+
+.vl-sticky-bar-img {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+    border-radius: 6px;
+    flex-shrink: 0;
+    display: none;
+}
+
+@media (min-width: 480px) {
+    .vl-sticky-bar-img { display: block; }
+}
+
+.vl-sticky-bar-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.vl-sticky-bar-nome {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--cor-texto);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.vl-sticky-bar-preco {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--cor-primaria);
+}
+
+.vl-sticky-bar-btn {
+    flex-shrink: 0;
+    padding: 0.65rem 1.5rem;
+    font-size: 0.95rem;
+    font-weight: 700;
+    background-color: var(--cor-primaria);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.2s ease;
+}
+
+.vl-sticky-bar-btn:hover {
+    background-color: var(--cor-primaria-escura, #3a7a1e);
 }
