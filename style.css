@@ -1,0 +1,40 @@
+/*
+Theme Name: Viva Leve Child
+Theme URI:
+Description: Child theme da Viva Leve — loja de produtos para fisioterapia, linfedema e lipedema
+Author: Viva Leve
+Template: storefront
+Version: 1.0.0
+*/
+
+/*
+ * =========================================================
+ * VARIÁVEIS CSS DA MARCA — VIVA LEVE
+ * =========================================================
+ * Edite aqui para propagar mudanças visuais em todo o site.
+ * Cada variável indica onde é aplicada.
+ * =========================================================
+ */
+
+:root {
+    /* Cor principal da marca — usada em botões, links, destaques e CTAs */
+    --cor-primaria: #5ba4a0;
+
+    /* Cor secundária — usada em hover, badges, destaques de preço e elementos de apoio */
+    --cor-secundaria: #a8d5d1;
+
+    /* Cor padrão do texto corrido, títulos e labels de formulários */
+    --cor-texto: #333333;
+
+    /* Cor de fundo de página, seções e cards de produto */
+    --cor-fundo: #ffffff;
+
+    /* Família tipográfica principal — aplicada em todo o site via body */
+    --fonte-principal: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+    /* Arredondamento de bordas — botões, cards, inputs e imagens de produto */
+    --raio-borda: 8px;
+
+    /* Espaçamento base para margens e paddings internos de seções */
+    --espacamento-base: 1rem;
+}

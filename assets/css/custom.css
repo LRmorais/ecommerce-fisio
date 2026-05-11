@@ -1,0 +1,152 @@
+/*
+ * custom.css — Viva Leve Child Theme
+ * Estilos personalizados organizados por seção do site.
+ * Use as variáveis CSS definidas em style.css para manter consistência visual.
+ */
+
+
+/* ===================================================
+   === Global
+   Estilos base aplicados em todo o site.
+   =================================================== */
+
+body {
+    font-family: var(--fonte-principal);
+    color: var(--cor-texto);
+    background-color: var(--cor-fundo);
+}
+
+a {
+    color: var(--cor-primaria);
+}
+
+a:hover {
+    color: var(--cor-secundaria);
+}
+
+/* Botões principais (CTA, "Adicionar ao carrinho", "Finalizar pedido") */
+.button,
+button,
+input[type="submit"] {
+    background-color: var(--cor-primaria);
+    color: #ffffff;
+    border-radius: var(--raio-borda);
+    border: none;
+    padding: 0.75rem var(--espacamento-base);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.button:hover,
+button:hover,
+input[type="submit"]:hover {
+    background-color: var(--cor-secundaria);
+    color: var(--cor-texto);
+}
+
+
+/* ===================================================
+   === Header
+   Barra de topo, logo e navegação principal.
+   =================================================== */
+
+/* Adicione aqui estilos do cabeçalho */
+
+
+/* ===================================================
+   === Vitrine de Produtos
+   Página de categoria, resultados de busca e grid de produtos.
+   =================================================== */
+
+/* Cards de produto na vitrine */
+.woocommerce ul.products li.product {
+    border-radius: var(--raio-borda);
+    overflow: hidden;
+    transition: box-shadow 0.2s ease;
+}
+
+.woocommerce ul.products li.product:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Título do produto na vitrine */
+.woocommerce ul.products li.product .woocommerce-loop-product__title {
+    font-size: 1rem;
+    color: var(--cor-texto);
+}
+
+/* Preço na vitrine */
+.woocommerce ul.products li.product .price {
+    color: var(--cor-primaria);
+    font-weight: 600;
+}
+
+
+/* ===================================================
+   === Página do Produto
+   Imagem, galeria, descrição, preço e botão de compra.
+   =================================================== */
+
+/* Título do produto na página individual */
+.woocommerce div.product .product_title {
+    color: var(--cor-texto);
+}
+
+/* Preço na página do produto */
+.woocommerce div.product p.price,
+.woocommerce div.product span.price {
+    color: var(--cor-primaria);
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+/* Botão "Adicionar ao carrinho" */
+.woocommerce div.product form.cart .single_add_to_cart_button {
+    background-color: var(--cor-primaria);
+    border-radius: var(--raio-borda);
+}
+
+.woocommerce div.product form.cart .single_add_to_cart_button:hover {
+    background-color: var(--cor-secundaria);
+}
+
+
+/* ===================================================
+   === Carrinho
+   Tabela de itens, totais e botão de checkout.
+   =================================================== */
+
+/* Adicione aqui estilos da página de carrinho */
+
+
+/* ===================================================
+   === Checkout
+   Formulários de endereço, pagamento e confirmação.
+   =================================================== */
+
+/* Campos de formulário no checkout */
+.woocommerce-checkout input[type="text"],
+.woocommerce-checkout input[type="email"],
+.woocommerce-checkout input[type="tel"],
+.woocommerce-checkout select,
+.woocommerce-checkout textarea {
+    border-radius: var(--raio-borda);
+    border: 1px solid #cccccc;
+    padding: 0.6rem var(--espacamento-base);
+}
+
+.woocommerce-checkout input:focus,
+.woocommerce-checkout select:focus,
+.woocommerce-checkout textarea:focus {
+    border-color: var(--cor-primaria);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(91, 164, 160, 0.2);
+}
+
+
+/* ===================================================
+   === Rodapé
+   Widgets, créditos e links secundários.
+   =================================================== */
+
+/* Adicione aqui estilos do rodapé */
