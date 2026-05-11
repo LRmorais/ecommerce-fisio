@@ -2,7 +2,7 @@
 /**
  * Override: checkout/form-checkout.php
  * Viva Leve Child Theme
- * Baseado no template original do WooCommerce — personalize abaixo
+ * Baseado no template original do WooCommerce — personalizado com textos em PT-BR
  *
  * COMO OBTER O ARQUIVO ORIGINAL:
  * Copie de:
@@ -10,31 +10,24 @@
  * Cole em:
  *   ~/Local Sites/viva-leve/app/public/wp-content/themes/viva-leve-child/woocommerce/checkout/form-checkout.php
  *
- * Este arquivo controla o layout do formulário de checkout:
- * dados do comprador, endereço de entrega, método de pagamento e confirmação.
- *
  * @see     https://woocommerce.com/document/template-structure/
  * @package WooCommerce\Templates\Checkout
  */
 
 defined( 'ABSPATH' ) || exit;
 
-// Se o checkout não está habilitado, mostra o aviso padrão
 if ( ! is_checkout() ) {
 	return;
 }
 
-// Redireciona se o carrinho estiver vazio
 if ( WC()->cart->is_empty() ) {
-	wc_add_notice( __( 'Your cart is currently empty.', 'woocommerce' ), 'error' );
+	wc_add_notice( 'Seu carrinho está vazio. Explore nossos produtos antes de finalizar a compra.', 'error' );
 }
 
-// Carrega os scripts de checkout do WooCommerce
 do_action( 'woocommerce_before_checkout_form', WC()->checkout() );
 
-// Se o checkout não está habilitado após as verificações
 if ( ! WC()->checkout()->is_registration_enabled() && WC()->checkout()->is_registration_required() && ! is_user_logged_in() ) {
-	echo esc_html( apply_filters( 'woocommerce_checkout_must_be_logged_in_message', __( 'You must be logged in to checkout.', 'woocommerce' ) ) );
+	echo esc_html( apply_filters( 'woocommerce_checkout_must_be_logged_in_message', 'Você precisa estar logado para finalizar a compra.' ) );
 	return;
 }
 ?>
@@ -61,7 +54,7 @@ if ( ! WC()->checkout()->is_registration_enabled() && WC()->checkout()->is_regis
 
 	<?php do_action( 'woocommerce_checkout_before_order_review_heading' ); ?>
 
-	<h3 id="order_review_heading"><?php esc_html_e( 'Your order', 'woocommerce' ); ?></h3>
+	<h3 id="order_review_heading">Seu pedido</h3>
 
 	<?php do_action( 'woocommerce_checkout_before_order_review' ); ?>
 

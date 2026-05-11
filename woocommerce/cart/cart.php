@@ -2,16 +2,13 @@
 /**
  * Override: cart/cart.php
  * Viva Leve Child Theme
- * Baseado no template original do WooCommerce — personalize abaixo
+ * Baseado no template original do WooCommerce — personalizado com textos em PT-BR
  *
  * COMO OBTER O ARQUIVO ORIGINAL:
  * Copie de:
  *   ~/Local Sites/viva-leve/app/public/wp-content/plugins/woocommerce/templates/cart/cart.php
  * Cole em:
  *   ~/Local Sites/viva-leve/app/public/wp-content/themes/viva-leve-child/woocommerce/cart/cart.php
- *
- * Este arquivo controla o layout da página do carrinho:
- * tabela de itens, quantidades, totais e botão de checkout.
  *
  * @see     https://woocommerce.com/document/template-structure/
  * @package WooCommerce\Templates\Cart
@@ -28,12 +25,12 @@ do_action( 'woocommerce_before_cart' );
 	<table class="shop_table shop_table_responsive cart woocommerce-cart-form__contents" cellspacing="0">
 		<thead>
 			<tr>
-				<th class="product-remove"><span class="screen-reader-text"><?php esc_html_e( 'Remove item', 'woocommerce' ); ?></span></th>
-				<th class="product-thumbnail"><span class="screen-reader-text"><?php esc_html_e( 'Thumbnail', 'woocommerce' ); ?></span></th>
-				<th class="product-name"><?php esc_html_e( 'Product', 'woocommerce' ); ?></th>
-				<th class="product-price"><?php esc_html_e( 'Price', 'woocommerce' ); ?></th>
-				<th class="product-quantity"><?php esc_html_e( 'Quantity', 'woocommerce' ); ?></th>
-				<th class="product-subtotal"><?php esc_html_e( 'Subtotal', 'woocommerce' ); ?></th>
+				<th class="product-remove"><span class="screen-reader-text">Remover item</span></th>
+				<th class="product-thumbnail"><span class="screen-reader-text">Imagem</span></th>
+				<th class="product-name">Produto</th>
+				<th class="product-price">Preço</th>
+				<th class="product-quantity">Quantidade</th>
+				<th class="product-subtotal">Subtotal</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -41,8 +38,8 @@ do_action( 'woocommerce_before_cart' );
 
 			<?php
 			foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
-				$_product   = apply_filters( 'woocommerce_cart_item_product', $cart_item['data'], $cart_item, $cart_item_key );
-				$product_id = apply_filters( 'woocommerce_cart_item_product_id', $cart_item['product_id'], $cart_item, $cart_item_key );
+				$_product     = apply_filters( 'woocommerce_cart_item_product', $cart_item['data'], $cart_item, $cart_item_key );
+				$product_id   = apply_filters( 'woocommerce_cart_item_product_id', $cart_item['product_id'], $cart_item, $cart_item_key );
 				$product_name = apply_filters( 'woocommerce_cart_item_name', $_product->get_name(), $cart_item, $cart_item_key );
 
 				if ( $_product && $_product->exists() && $cart_item['quantity'] > 0 && apply_filters( 'woocommerce_cart_item_visible', true, $cart_item, $cart_item_key ) ) {
@@ -57,8 +54,7 @@ do_action( 'woocommerce_before_cart' );
 								sprintf(
 									'<a href="%s" class="remove" aria-label="%s" data-product_id="%s" data-product_sku="%s">&times;</a>',
 									esc_url( wc_get_cart_remove_url( $cart_item_key ) ),
-									/* translators: %s is the product name */
-									esc_attr( sprintf( __( 'Remove %s from cart', 'woocommerce' ), wp_strip_all_tags( $product_name ) ) ),
+									esc_attr( sprintf( 'Remover %s do carrinho', wp_strip_all_tags( $product_name ) ) ),
 									esc_attr( $product_id ),
 									esc_attr( $_product->get_sku() )
 								),
@@ -78,7 +74,7 @@ do_action( 'woocommerce_before_cart' );
 							?>
 						</td>
 
-						<td class="product-name" data-title="<?php esc_attr_e( 'Product', 'woocommerce' ); ?>">
+						<td class="product-name" data-title="Produto">
 							<?php
 							if ( ! $product_permalink ) {
 								echo wp_kses_post( $product_name . '&nbsp;' );
@@ -91,16 +87,16 @@ do_action( 'woocommerce_before_cart' );
 							echo wc_get_formatted_cart_item_data( $cart_item ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
 							if ( $_product->backorders_require_notification() && $_product->is_on_backorder( $cart_item['quantity'] ) ) {
-								echo wp_kses_post( apply_filters( 'woocommerce_cart_item_backorder_notification', '<p class="backorder_notification">' . esc_html__( 'Available on backorder', 'woocommerce' ) . '</p>', $product_id ) );
+								echo wp_kses_post( apply_filters( 'woocommerce_cart_item_backorder_notification', '<p class="backorder_notification">Disponível sob encomenda</p>', $product_id ) );
 							}
 							?>
 						</td>
 
-						<td class="product-price" data-title="<?php esc_attr_e( 'Price', 'woocommerce' ); ?>">
+						<td class="product-price" data-title="Preço">
 							<?php echo apply_filters( 'woocommerce_cart_item_price', WC()->cart->get_product_price( $_product ), $cart_item, $cart_item_key ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 						</td>
 
-						<td class="product-quantity" data-title="<?php esc_attr_e( 'Quantity', 'woocommerce' ); ?>">
+						<td class="product-quantity" data-title="Quantidade">
 							<?php
 							if ( $_product->is_sold_individually() ) {
 								$min_quantity = 1;
@@ -126,7 +122,7 @@ do_action( 'woocommerce_before_cart' );
 							?>
 						</td>
 
-						<td class="product-subtotal" data-title="<?php esc_attr_e( 'Subtotal', 'woocommerce' ); ?>">
+						<td class="product-subtotal" data-title="Subtotal">
 							<?php echo apply_filters( 'woocommerce_cart_item_subtotal', WC()->cart->get_product_subtotal( $_product, $cart_item['quantity'] ), $cart_item, $cart_item_key ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 						</td>
 					</tr>
@@ -141,14 +137,14 @@ do_action( 'woocommerce_before_cart' );
 				<td colspan="6" class="actions">
 					<?php if ( wc_coupons_enabled() ) { ?>
 						<div class="coupon">
-							<label for="coupon_code" class="screen-reader-text"><?php esc_html_e( 'Coupon:', 'woocommerce' ); ?></label>
-							<input type="text" name="coupon_code" class="input-text" id="coupon_code" value="" placeholder="<?php esc_attr_e( 'Coupon code', 'woocommerce' ); ?>" />
-							<button type="submit" class="button" name="apply_coupon" value="<?php esc_attr_e( 'Apply coupon', 'woocommerce' ); ?>"><?php esc_html_e( 'Apply coupon', 'woocommerce' ); ?></button>
+							<label for="coupon_code" class="screen-reader-text">Cupom:</label>
+							<input type="text" name="coupon_code" class="input-text" id="coupon_code" value="" placeholder="Código do cupom" />
+							<button type="submit" class="button" name="apply_coupon" value="Aplicar cupom">Aplicar cupom</button>
 							<?php do_action( 'woocommerce_cart_coupon' ); ?>
 						</div>
 					<?php } ?>
 
-					<button type="submit" class="button" name="update_cart" value="<?php esc_attr_e( 'Update cart', 'woocommerce' ); ?>"><?php esc_html_e( 'Update cart', 'woocommerce' ); ?></button>
+					<button type="submit" class="button" name="update_cart" value="Atualizar carrinho">Atualizar carrinho</button>
 
 					<?php do_action( 'woocommerce_cart_actions' ); ?>
 

@@ -8,49 +8,31 @@ document.addEventListener( 'DOMContentLoaded', function () {
 
     // =========================================================
     // === MENU HAMBURGUER MOBILE
-    // Alterna a visibilidade do menu ao clicar no botão.
-    // Fecha automaticamente ao clicar fora do header.
+    // Alterna o dropdown de navegação ao clicar no botão.
+    // Fecha automaticamente ao clicar fora do header ou Escape.
     // =========================================================
 
-    var header       = document.querySelector( '.site-header' );
-    var btnHamburguer = document.querySelector( '.btn-menu-hamburguer' );
-    var menu         = document.querySelector( '.main-navigation' );
+    var header        = document.querySelector( '.site-header' );
+    var btnHamburguer = document.querySelector( '.vl-hamburguer' );
+    var nav           = document.getElementById( 'vl-nav' );
 
-    if ( btnHamburguer && menu ) {
-
-        // Garante atributos de acessibilidade no botão
-        btnHamburguer.setAttribute( 'aria-controls', 'menu-principal' );
-        btnHamburguer.setAttribute( 'aria-expanded', 'false' );
-
-        if ( menu.id === '' ) {
-            menu.id = 'menu-principal';
-        }
+    if ( btnHamburguer && nav ) {
 
         btnHamburguer.addEventListener( 'click', function () {
-            var estaAberto = menu.classList.toggle( 'menu-aberto' );
-
-            if ( header ) {
-                header.classList.toggle( 'menu-aberto', estaAberto );
-            }
-
-            // Atualiza o atributo de acessibilidade
+            var estaAberto = nav.classList.toggle( 'aberto' );
             this.setAttribute( 'aria-expanded', estaAberto ? 'true' : 'false' );
         } );
 
-        // Fecha o menu ao clicar fora do header
         document.addEventListener( 'click', function ( evento ) {
             if ( header && ! header.contains( evento.target ) ) {
-                menu.classList.remove( 'menu-aberto' );
-                header.classList.remove( 'menu-aberto' );
+                nav.classList.remove( 'aberto' );
                 btnHamburguer.setAttribute( 'aria-expanded', 'false' );
             }
         } );
 
-        // Fecha o menu ao pressionar Escape — acessibilidade de teclado
         document.addEventListener( 'keydown', function ( evento ) {
-            if ( evento.key === 'Escape' && menu.classList.contains( 'menu-aberto' ) ) {
-                menu.classList.remove( 'menu-aberto' );
-                header.classList.remove( 'menu-aberto' );
+            if ( evento.key === 'Escape' && nav.classList.contains( 'aberto' ) ) {
+                nav.classList.remove( 'aberto' );
                 btnHamburguer.setAttribute( 'aria-expanded', 'false' );
                 btnHamburguer.focus();
             }
