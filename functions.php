@@ -84,21 +84,54 @@ function vivaleve_fragmento_carrinho( $fragmentos ) {
 
 /**
  * Fallback de navegação quando nenhum menu está atribuído à localização 'primary'.
- * Exibe as páginas publicadas, excluindo páginas funcionais do WooCommerce.
+ * Exibe "Início" + todas as categorias de produto cadastradas (exceto "Sem categoria").
  */
 function vivaleve_menu_fallback() {
-    $excluir = array_filter( array_map( 'intval', [
-        get_option( 'woocommerce_cart_page_id' ),
-        get_option( 'woocommerce_checkout_page_id' ),
-        get_option( 'woocommerce_myaccount_page_id' ),
-    ] ) );
+    $slugs_excluir = array( 'sem-categoria', 'uncategorized' );
+
+    $pais = get_terms( array(
+        'taxonomy'   => 'product_cat',
+        'orderby'    => 'name',
+        'order'      => 'ASC',
+        'hide_empty' => false,
+        'parent'     => 0,
+        'slug__not_in' => $slugs_excluir,
+    ) );
 
     echo '<ul class="vl-menu">';
-    wp_list_pages( array(
-        'title_li' => '',
-        'exclude'  => implode( ',', $excluir ),
-        'echo'     => true,
-    ) );
+    echo '<li class="menu-item"><a href="' . esc_url( home_url( '/' ) ) . '">'
+        . esc_html__( 'Início', 'viva-leve-child' ) . '</a></li>';
+
+    if ( ! is_wp_error( $pais ) && ! empty( $pais ) ) {
+        foreach ( $pais as $cat ) {
+            $filhos = get_terms( array(
+                'taxonomy'     => 'product_cat',
+                'orderby'      => 'name',
+                'order'        => 'ASC',
+                'hide_empty'   => false,
+                'parent'       => $cat->term_id,
+                'slug__not_in' => $slugs_excluir,
+            ) );
+
+            $tem_filhos = ! is_wp_error( $filhos ) && ! empty( $filhos );
+
+            echo '<li class="menu-item' . ( $tem_filhos ? ' menu-item-has-children' : '' ) . '">';
+            echo '<a href="' . esc_url( get_term_link( $cat ) ) . '">'
+                . esc_html( $cat->name ) . '</a>';
+
+            if ( $tem_filhos ) {
+                echo '<ul class="sub-menu">';
+                foreach ( $filhos as $filho ) {
+                    echo '<li class="menu-item"><a href="' . esc_url( get_term_link( $filho ) ) . '">'
+                        . esc_html( $filho->name ) . '</a></li>';
+                }
+                echo '</ul>';
+            }
+
+            echo '</li>';
+        }
+    }
+
     echo '</ul>';
 }
 
@@ -584,3 +617,442 @@ function vivaleve_traduzir_contexto_woocommerce( $traduzido, $original, $context
 
 // Remove a meta tag "generator" que expõe a versão do WordPress
 remove_action( 'wp_head', 'wp_generator' );
+
+
+/* =========================================================
+ * 10. PÁGINA DE PRODUTO — ALTA CONVERSÃO
+ * =========================================================
+ * Ajusta layout, adiciona selos de confiança, urgência de
+ * estoque e barra sticky de compra via hooks do WooCommerce.
+ * ========================================================= */
+
+// Remove sidebar na página de produto (layout full-width)
+add_filter( 'storefront_layout', function( $layout ) {
+    if ( is_product() ) return 'full-width';
+    return $layout;
+} );
+
+// Remove compartilhamento (pouco relevante para conversão)
+add_action( 'init', function() {
+    remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_sharing', 50 );
+} );
+
+// Move a avaliação para antes do preço (prioridade 8) para dar credibilidade primeiro
+add_action( 'init', function() {
+    remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_rating', 10 );
+    add_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_rating', 8 );
+} );
+
+// Botão WhatsApp logo abaixo do add-to-cart (prioridade 31)
+add_action( 'woocommerce_single_product_summary', 'vivaleve_btn_whatsapp', 31 );
+
+function vivaleve_btn_whatsapp() {
+    $numero = preg_replace( '/\D/', '', get_theme_mod( 'vl_footer_whatsapp', '' ) );
+    if ( ! $numero ) return;
+
+    global $product;
+    $mensagem = rawurlencode(
+        sprintf(
+            __( 'Olá! Tenho interesse no produto: %s — %s', 'viva-leve-child' ),
+            get_the_title(),
+            get_permalink()
+        )
+    );
+
+    $url = 'https://wa.me/' . esc_attr( $numero ) . '?text=' . $mensagem;
+    ?>
+    <a href="<?php echo esc_url( $url ); ?>"
+       class="vl-btn-whatsapp"
+       target="_blank"
+       rel="noopener noreferrer"
+       aria-label="<?php esc_attr_e( 'Comprar pelo WhatsApp', 'viva-leve-child' ); ?>">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+             fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+        </svg>
+        <?php esc_html_e( 'Comprar pelo WhatsApp', 'viva-leve-child' ); ?>
+    </a>
+    <?php
+}
+
+// Selos de confiança abaixo do botão de compra (prioridade 35)
+add_action( 'woocommerce_single_product_summary', 'vivaleve_selos_confianca', 35 );
+
+function vivaleve_selos_confianca() {
+    ?>
+    <div class="vl-produto-selos">
+        <div class="vl-produto-selo">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+            <span><?php esc_html_e( 'Compra 100% segura', 'viva-leve-child' ); ?></span>
+        </div>
+        <div class="vl-produto-selo">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+            <span><?php esc_html_e( 'Envio para todo o Brasil', 'viva-leve-child' ); ?></span>
+        </div>
+        <div class="vl-produto-selo">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <span><?php esc_html_e( 'Devolução facilitada', 'viva-leve-child' ); ?></span>
+        </div>
+    </div>
+    <?php
+}
+
+// Urgência de estoque logo antes do add-to-cart (prioridade 29)
+add_action( 'woocommerce_single_product_summary', 'vivaleve_urgencia_estoque', 29 );
+
+function vivaleve_urgencia_estoque() {
+    global $product;
+    if ( ! $product || ! $product->managing_stock() ) return;
+
+    $estoque = $product->get_stock_quantity();
+    if ( $estoque === null || $estoque > 10 ) return;
+
+    if ( $estoque <= 0 ) return;
+
+    $classe = $estoque <= 3 ? 'vl-estoque--critico' : 'vl-estoque--baixo';
+    ?>
+    <p class="vl-estoque-urgencia <?php echo esc_attr( $classe ); ?>">
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <?php printf(
+            esc_html( _n( 'Restam apenas %d unidade em estoque!', 'Restam apenas %d unidades em estoque!', $estoque, 'viva-leve-child' ) ),
+            $estoque
+        ); ?>
+    </p>
+    <?php
+}
+
+// Barra sticky de compra — dados via atributo data para o JS
+add_action( 'woocommerce_after_single_product', 'vivaleve_barra_sticky' );
+
+function vivaleve_barra_sticky() {
+    global $product;
+    if ( ! $product ) return;
+
+    $preco = $product->get_price_html();
+    $nome  = get_the_title();
+    $img   = get_the_post_thumbnail_url( null, 'thumbnail' );
+    ?>
+    <div class="vl-sticky-bar" id="vl-sticky-bar" aria-hidden="true">
+        <div class="vl-sticky-bar-inner">
+            <div class="vl-sticky-bar-produto">
+                <?php if ( $img ) : ?>
+                    <img src="<?php echo esc_url( $img ); ?>" alt="" class="vl-sticky-bar-img" aria-hidden="true">
+                <?php endif; ?>
+                <div class="vl-sticky-bar-info">
+                    <span class="vl-sticky-bar-nome"><?php echo esc_html( $nome ); ?></span>
+                    <span class="vl-sticky-bar-preco"><?php echo wp_kses_post( $preco ); ?></span>
+                </div>
+            </div>
+            <button class="vl-sticky-bar-btn button" id="vl-sticky-bar-btn">
+                <?php esc_html_e( 'Adicionar ao carrinho', 'viva-leve-child' ); ?>
+            </button>
+        </div>
+    </div>
+    <?php
+}
+
+
+/* =========================================================
+ * 8. CUSTOMIZER: SEÇÃO SOBRE A MARCA
+ * =========================================================
+ * Adiciona um painel em Aparência → Personalizar para editar
+ * o conteúdo da seção "Sobre a marca" sem tocar em código.
+ * ========================================================= */
+
+add_action( 'customize_register', 'vivaleve_customizer_footer' );
+
+function vivaleve_customizer_footer( $wp_customize ) {
+
+    $wp_customize->add_section( 'vl_footer', array(
+        'title'    => 'Rodapé',
+        'priority' => 35,
+    ) );
+
+    $campos = array(
+        array( 'id' => 'vl_footer_tagline',   'label' => 'Tagline da marca',    'default' => 'Saúde e bem-estar para o seu dia a dia.' ),
+        array( 'id' => 'vl_footer_telefone',  'label' => 'Telefone / WhatsApp', 'default' => '' ),
+        array( 'id' => 'vl_footer_email',     'label' => 'E-mail de contato',   'default' => '' ),
+        array( 'id' => 'vl_footer_endereco',  'label' => 'Endereço',            'default' => '' ),
+        array( 'id' => 'vl_footer_instagram', 'label' => 'Instagram (URL)',      'default' => '' ),
+        array( 'id' => 'vl_footer_facebook',  'label' => 'Facebook (URL)',       'default' => '' ),
+        array( 'id' => 'vl_footer_whatsapp',  'label' => 'WhatsApp (número com DDD, só números)', 'default' => '' ),
+    );
+
+    foreach ( $campos as $campo ) {
+        $wp_customize->add_setting( $campo['id'], array(
+            'default'           => $campo['default'],
+            'sanitize_callback' => 'sanitize_text_field',
+            'transport'         => 'refresh',
+        ) );
+        $wp_customize->add_control( $campo['id'], array(
+            'label'   => $campo['label'],
+            'section' => 'vl_footer',
+            'type'    => 'text',
+        ) );
+    }
+}
+
+add_action( 'customize_register', 'vivaleve_customizer_sobre_marca' );
+
+function vivaleve_customizer_sobre_marca( $wp_customize ) {
+
+    $wp_customize->add_section( 'vl_sobre_marca', array(
+        'title'    => 'Sobre a Marca',
+        'panel'    => '',
+        'priority' => 40,
+    ) );
+
+    $campos = array(
+        array(
+            'id'      => 'vl_sobre_exibir',
+            'label'   => 'Exibir seção na página inicial',
+            'type'    => 'checkbox',
+            'default' => true,
+        ),
+        array(
+            'id'      => 'vl_sobre_titulo',
+            'label'   => 'Título',
+            'type'    => 'text',
+            'default' => 'Nossa missão é cuidar de você',
+        ),
+        array(
+            'id'      => 'vl_sobre_texto',
+            'label'   => 'Texto',
+            'type'    => 'textarea',
+            'default' => 'Nascemos com o propósito de levar saúde, conforto e bem-estar para o seu dia a dia. Cada produto é selecionado com cuidado para garantir qualidade e resultados reais.',
+        ),
+        array(
+            'id'      => 'vl_sobre_btn_texto',
+            'label'   => 'Texto do botão',
+            'type'    => 'text',
+            'default' => 'Conheça nossa história',
+        ),
+        array(
+            'id'      => 'vl_sobre_btn_url',
+            'label'   => 'Link do botão',
+            'type'    => 'url',
+            'default' => '',
+        ),
+    );
+
+    foreach ( $campos as $campo ) {
+        $wp_customize->add_setting( $campo['id'], array(
+            'default'           => $campo['default'],
+            'sanitize_callback' => $campo['type'] === 'checkbox' ? 'wp_validate_boolean'
+                                 : ( $campo['type'] === 'url'  ? 'esc_url_raw' : 'sanitize_textarea_field' ),
+            'transport'         => 'refresh',
+        ) );
+
+        $control_args = array(
+            'label'   => $campo['label'],
+            'section' => 'vl_sobre_marca',
+            'type'    => $campo['type'],
+        );
+
+        $wp_customize->add_control( $campo['id'], $control_args );
+    }
+
+    // Upload de imagem separado
+    $wp_customize->add_setting( 'vl_sobre_imagem', array(
+        'default'           => '',
+        'sanitize_callback' => 'absint',
+        'transport'         => 'refresh',
+    ) );
+
+    $wp_customize->add_control( new WP_Customize_Media_Control( $wp_customize, 'vl_sobre_imagem', array(
+        'label'     => 'Imagem',
+        'section'   => 'vl_sobre_marca',
+        'mime_type' => 'image',
+    ) ) );
+}
+
+
+/* =========================================================
+ * 6. CPT: BANNERS DO SLIDER
+ * =========================================================
+ * Registra o tipo de post "vl_slide" para gerenciar os banners
+ * da página inicial pelo painel do WordPress.
+ * Cada slide suporta: título, imagem destacada, subtítulo,
+ * texto do botão e URL do botão (via meta boxes nativos).
+ * ========================================================= */
+
+add_action( 'init', 'vivaleve_registrar_cpt_slide' );
+
+function vivaleve_registrar_cpt_slide() {
+    register_post_type( 'vl_slide', array(
+        'labels' => array(
+            'name'               => 'Banners',
+            'singular_name'      => 'Banner',
+            'add_new'            => 'Adicionar Banner',
+            'add_new_item'       => 'Adicionar Novo Banner',
+            'edit_item'          => 'Editar Banner',
+            'new_item'           => 'Novo Banner',
+            'view_item'          => 'Ver Banner',
+            'search_items'       => 'Buscar Banners',
+            'not_found'          => 'Nenhum banner encontrado',
+            'not_found_in_trash' => 'Nenhum banner na lixeira',
+            'menu_name'          => 'Banners',
+        ),
+        'public'        => false,
+        'show_ui'       => true,
+        'show_in_menu'  => true,
+        'menu_icon'     => 'dashicons-images-alt2',
+        'menu_position' => 5,
+        'supports'      => array( 'title', 'thumbnail', 'page-attributes' ),
+        'rewrite'       => false,
+    ) );
+}
+
+// Meta box: subtítulo, texto do botão e URL do botão
+add_action( 'add_meta_boxes', 'vivaleve_slide_meta_box' );
+
+function vivaleve_slide_meta_box() {
+    add_meta_box(
+        'vl_slide_detalhes',
+        'Detalhes do Banner',
+        'vivaleve_slide_meta_box_html',
+        'vl_slide',
+        'normal',
+        'high'
+    );
+}
+
+function vivaleve_slide_meta_box_html( $post ) {
+    ?>
+    <p style="color:#555;font-size:0.9em;margin:0;">
+        Defina a <strong>Imagem Destacada</strong> do banner (coluna à direita).<br>
+        A ordem de exibição é controlada pelo campo <strong>Ordem</strong> em Atributos do post.
+    </p>
+    <?php
+}
+
+
+/* =========================================================
+ * 7. CPT: DEPOIMENTOS DE CLIENTES
+ * =========================================================
+ * Gerencia os depoimentos exibidos na página inicial.
+ * Cada depoimento tem: texto (conteúdo), nome do cliente (título),
+ * cargo/cidade, avaliação em estrelas e foto (imagem destacada).
+ * ========================================================= */
+
+add_action( 'init', 'vivaleve_registrar_cpt_depoimento' );
+
+function vivaleve_registrar_cpt_depoimento() {
+    register_post_type( 'vl_depoimento', array(
+        'labels' => array(
+            'name'               => 'Depoimentos',
+            'singular_name'      => 'Depoimento',
+            'add_new'            => 'Adicionar Depoimento',
+            'add_new_item'       => 'Adicionar Novo Depoimento',
+            'edit_item'          => 'Editar Depoimento',
+            'not_found'          => 'Nenhum depoimento encontrado',
+            'not_found_in_trash' => 'Nenhum depoimento na lixeira',
+            'menu_name'          => 'Depoimentos',
+        ),
+        'public'        => false,
+        'show_ui'       => true,
+        'show_in_menu'  => true,
+        'menu_icon'     => 'dashicons-format-quote',
+        'menu_position' => 6,
+        'supports'      => array( 'title', 'editor', 'thumbnail' ),
+        'rewrite'       => false,
+    ) );
+}
+
+add_action( 'add_meta_boxes', 'vivaleve_depoimento_meta_box' );
+
+function vivaleve_depoimento_meta_box() {
+    add_meta_box(
+        'vl_depoimento_detalhes',
+        'Detalhes do Depoimento',
+        'vivaleve_depoimento_meta_box_html',
+        'vl_depoimento',
+        'normal',
+        'high'
+    );
+}
+
+function vivaleve_depoimento_meta_box_html( $post ) {
+    wp_nonce_field( 'vl_depoimento_salvar', 'vl_depoimento_nonce' );
+    $cargo     = get_post_meta( $post->ID, '_vl_depoimento_cargo', true );
+    $avaliacao = get_post_meta( $post->ID, '_vl_depoimento_avaliacao', true );
+    if ( '' === $avaliacao ) $avaliacao = '5';
+    ?>
+    <p>
+        <label for="vl_depoimento_cargo"><strong>Cargo / Cidade</strong></label><br>
+        <input type="text" id="vl_depoimento_cargo" name="vl_depoimento_cargo"
+               value="<?php echo esc_attr( $cargo ); ?>" style="width:100%"
+               placeholder="Ex: São Paulo, SP">
+    </p>
+    <p>
+        <label for="vl_depoimento_avaliacao"><strong>Avaliação (1 a 5 estrelas)</strong></label><br>
+        <select id="vl_depoimento_avaliacao" name="vl_depoimento_avaliacao">
+            <?php for ( $i = 5; $i >= 1; $i-- ) : ?>
+                <option value="<?php echo $i; ?>" <?php selected( $avaliacao, (string) $i ); ?>>
+                    <?php echo str_repeat( '★', $i ) . str_repeat( '☆', 5 - $i ) . ' (' . $i . ')'; ?>
+                </option>
+            <?php endfor; ?>
+        </select>
+    </p>
+    <p style="color:#555;font-size:0.9em;margin:0;">
+        O texto do depoimento vai no campo <strong>conteúdo</strong> abaixo.<br>
+        O nome do cliente é o <strong>título</strong> do post.<br>
+        A <strong>Imagem Destacada</strong> é usada como foto do cliente (opcional).
+    </p>
+    <?php
+}
+
+add_action( 'save_post_vl_depoimento', 'vivaleve_depoimento_salvar_meta' );
+
+function vivaleve_depoimento_salvar_meta( $post_id ) {
+    if ( ! isset( $_POST['vl_depoimento_nonce'] )
+        || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['vl_depoimento_nonce'] ) ), 'vl_depoimento_salvar' )
+        || ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE )
+        || ! current_user_can( 'edit_post', $post_id )
+    ) {
+        return;
+    }
+
+    if ( isset( $_POST['vl_depoimento_cargo'] ) ) {
+        update_post_meta( $post_id, '_vl_depoimento_cargo', sanitize_text_field( wp_unslash( $_POST['vl_depoimento_cargo'] ) ) );
+    }
+
+    if ( isset( $_POST['vl_depoimento_avaliacao'] ) ) {
+        $av = intval( $_POST['vl_depoimento_avaliacao'] );
+        update_post_meta( $post_id, '_vl_depoimento_avaliacao', max( 1, min( 5, $av ) ) );
+    }
+}
+
+
+/* =========================================================
+ * 9. CPT: FAQ
+ * =========================================================
+ * Perguntas e respostas exibidas na página inicial.
+ * Título = pergunta. Conteúdo = resposta.
+ * Ordem controlada pelo campo Ordem nos Atributos do post.
+ * ========================================================= */
+
+add_action( 'init', 'vivaleve_registrar_cpt_faq' );
+
+function vivaleve_registrar_cpt_faq() {
+    register_post_type( 'vl_faq', array(
+        'labels' => array(
+            'name'               => 'FAQ',
+            'singular_name'      => 'Pergunta',
+            'add_new'            => 'Adicionar Pergunta',
+            'add_new_item'       => 'Adicionar Nova Pergunta',
+            'edit_item'          => 'Editar Pergunta',
+            'not_found'          => 'Nenhuma pergunta encontrada',
+            'not_found_in_trash' => 'Nenhuma pergunta na lixeira',
+            'menu_name'          => 'FAQ',
+        ),
+        'public'        => false,
+        'show_ui'       => true,
+        'show_in_menu'  => true,
+        'menu_icon'     => 'dashicons-editor-help',
+        'menu_position' => 7,
+        'supports'      => array( 'title', 'editor', 'page-attributes' ),
+        'rewrite'       => false,
+    ) );
+}
