@@ -296,6 +296,8 @@ function vivaleve_traduzir_woocommerce( $traduzido, $original, $dominio ) {
         'Categories:'                         => 'Categorias:',
         'Tag:'                                => 'Tag:',
         'Tags:'                               => 'Tags:',
+        'Brand:'                              => 'Marca:',
+        'Brands:'                             => 'Marcas:',
         'SKU:'                                => 'Cód.:',
         'SKU'                                 => 'Código',
         'Quantity'                            => 'Quantidade',
@@ -458,9 +460,16 @@ function vivaleve_traduzir_plurais_woocommerce( $traduzido, $singular, $plural, 
         return $traduzido;
     }
 
-    // "%d result" / "%d results"
-    if ( '%d result' === $singular && '%d results' === $plural ) {
-        return $numero === 1 ? '%d resultado' : '%d resultados';
+    $mapa = array(
+        'Category:'  => array( 'Categoria:', 'Categorias:' ),
+        'Tag:'       => array( 'Tag:', 'Tags:' ),
+        'Brand:'     => array( 'Marca:', 'Marcas:' ),
+        '%d result'  => array( '%d resultado', '%d resultados' ),
+        '%d item removed.' => array( '%d item removido.', '%d itens removidos.' ),
+    );
+
+    if ( isset( $mapa[ $singular ] ) ) {
+        return $numero === 1 ? $mapa[ $singular ][0] : $mapa[ $singular ][1];
     }
 
     return $traduzido;
@@ -608,6 +617,78 @@ function vivaleve_traduzir_contexto_woocommerce( $traduzido, $original, $context
 }
 
 
+/* Tradução do rótulo "Brand" independente do text domain (WooCommerce Brands nativo ou plugin) */
+add_filter( 'gettext', function( $traduzido, $original, $dominio ) {
+    if ( 'Brand:'  === $original ) return 'Marca:';
+    if ( 'Brands:' === $original ) return 'Marcas:';
+    if ( 'Brand'   === $original ) return 'Marca';
+    if ( 'Brands'  === $original ) return 'Marcas';
+    return $traduzido;
+}, 99, 3 );
+
+add_filter( 'ngettext', function( $traduzido, $singular, $plural, $numero, $dominio ) {
+    if ( 'Brand:' === $singular && 'Brands:' === $plural ) {
+        return $numero === 1 ? 'Marca:' : 'Marcas:';
+    }
+    return $traduzido;
+}, 99, 5 );
+
+
+/* =========================================================
+ * 11. VITRINE DE PRODUTOS — FILTROS LATERAIS
+ * =========================================================
+ * Layout full-width na vitrine (sidebar customizada via template).
+ * Filtros por preço, avaliação e disponibilidade via query vars.
+ * ========================================================= */
+
+// Layout full-width em todas as páginas de arquivo de produtos
+add_filter( 'storefront_layout', function( $layout ) {
+    if ( is_shop() || is_product_category() || is_product_tag() || is_product() ) {
+        return 'full-width';
+    }
+    return $layout;
+} );
+
+// Remove breadcrumb nas páginas de arquivo — o título da página já orienta o usuário
+add_action( 'woocommerce_before_main_content', function() {
+    if ( is_shop() || is_product_category() || is_product_tag() ) {
+        remove_action( 'woocommerce_before_main_content', 'woocommerce_breadcrumb', 20 );
+    }
+}, 5 );
+
+// Filtra por estoque quando ?apenas_em_estoque=1
+add_action( 'woocommerce_product_query', function( $q ) {
+    if ( empty( $_GET['apenas_em_estoque'] ) ) return;
+    $meta = (array) $q->get( 'meta_query' );
+    $meta[] = array(
+        'key'   => '_stock_status',
+        'value' => 'instock',
+    );
+    $q->set( 'meta_query', $meta );
+} );
+
+// Filtra por avaliação mínima quando ?min_rating=N
+add_action( 'woocommerce_product_query', function( $q ) {
+    if ( empty( $_GET['min_rating'] ) ) return;
+    $min = (int) $_GET['min_rating'];
+    if ( $min <= 0 || $min > 5 ) return;
+    $meta = (array) $q->get( 'meta_query' );
+    $meta[] = array(
+        'key'     => '_wc_average_rating',
+        'value'   => $min,
+        'compare' => '>=',
+        'type'    => 'DECIMAL(10,2)',
+    );
+    $q->set( 'meta_query', $meta );
+} );
+
+// Função auxiliar: verifica se um termo é descendente de outro
+function is_child_term( $term_id, $parent_id ) {
+    $ancestors = get_ancestors( $term_id, 'product_cat' );
+    return in_array( $parent_id, $ancestors, true );
+}
+
+
 /* =========================================================
  * 5. LIMPEZA DO <HEAD>
  * =========================================================
@@ -694,6 +775,55 @@ function vivaleve_selos_confianca() {
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
             <span><?php esc_html_e( 'Devolução facilitada', 'viva-leve-child' ); ?></span>
         </div>
+    </div>
+    <?php
+}
+
+// Chamada para consulta com a Fisioterapeuta (prioridade 37 — após selos de confiança)
+add_action( 'woocommerce_single_product_summary', 'vivaleve_consulta_especialista', 37 );
+
+function vivaleve_consulta_especialista() {
+    $numero = preg_replace( '/\D/', '', get_theme_mod( 'vl_footer_whatsapp', '' ) );
+    if ( ! $numero ) return;
+
+    $mensagem = rawurlencode(
+        sprintf(
+            'Olá! Tenho dúvidas sobre o produto "%s" e gostaria de falar com a fisioterapeuta especialista.',
+            get_the_title()
+        )
+    );
+    $url = 'https://wa.me/' . esc_attr( $numero ) . '?text=' . $mensagem;
+    ?>
+    <div class="vl-consulta-especialista">
+        <div class="vl-consulta-icone" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
+                 fill="none" stroke="currentColor" stroke-width="1.6"
+                 stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+                <path d="M12 11v2m0 2h.01"/>
+            </svg>
+        </div>
+        <div class="vl-consulta-corpo">
+            <strong class="vl-consulta-titulo">
+                <?php esc_html_e( 'Tem dúvidas sobre este produto?', 'viva-leve-child' ); ?>
+            </strong>
+            <span class="vl-consulta-subtitulo">
+                <?php esc_html_e( 'Fale com nossa Fisioterapeuta especialista antes de comprar.', 'viva-leve-child' ); ?>
+            </span>
+        </div>
+        <a href="<?php echo esc_url( $url ); ?>"
+           class="vl-consulta-btn"
+           target="_blank"
+           rel="noopener noreferrer"
+           aria-label="<?php esc_attr_e( 'Falar com a fisioterapeuta pelo WhatsApp', 'viva-leve-child' ); ?>">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                 fill="none" stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+            </svg>
+            <?php esc_html_e( 'Falar com especialista', 'viva-leve-child' ); ?>
+        </a>
     </div>
     <?php
 }
@@ -1055,4 +1185,21 @@ function vivaleve_registrar_cpt_faq() {
         'supports'      => array( 'title', 'editor', 'page-attributes' ),
         'rewrite'       => false,
     ) );
+}
+
+
+/* =========================================================
+ * 10. GRID DE PRODUTOS — COLUNAS FIXAS
+ * =========================================================
+ * Força 3 colunas por linha nas páginas de loja/categoria,
+ * garantindo que a classe columns-3 seja sempre emitida no
+ * ul.products e evitando conflito com regras float do Storefront.
+ * ========================================================= */
+
+add_filter( 'loop_shop_columns', 'vivaleve_loop_colunas' );
+add_filter( 'woocommerce_loop_columns', 'vivaleve_loop_colunas' );
+add_filter( 'storefront_loop_columns', 'vivaleve_loop_colunas' );
+
+function vivaleve_loop_colunas( $colunas ) {
+    return 3;
 }

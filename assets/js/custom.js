@@ -41,26 +41,6 @@ document.addEventListener( 'DOMContentLoaded', function () {
 
 
     // =========================================================
-    // === PADDING-TOP DINÂMICO
-    // Mede a altura real do header e aplica como variável CSS
-    // --altura-header, usada no padding-top do conteúdo.
-    // Roda no carregamento e a cada resize para cobrir mudanças
-    // de layout (abertura do nav, redimensionamento de janela).
-    // =========================================================
-
-    function ajustarPaddingHeader() {
-        if ( ! header ) return;
-        document.documentElement.style.setProperty(
-            '--altura-header',
-            header.offsetHeight + 'px'
-        );
-    }
-
-    ajustarPaddingHeader();
-    window.addEventListener( 'resize', ajustarPaddingHeader, { passive: true } );
-
-
-    // =========================================================
     // === HEADER COM SOMBRA AO ROLAR
     // =========================================================
 
@@ -277,5 +257,109 @@ document.addEventListener( 'DOMContentLoaded', function () {
             } );
         }
     }
+
+
+    // =========================================================
+    // === SIDEBAR DE FILTROS — LOJA
+    // Toggle mobile, overlay, fechar com Escape.
+    // =========================================================
+
+    var btnFiltros  = document.getElementById( 'vl-filtros-toggle' );
+    var shopSidebar = document.getElementById( 'vl-shop-sidebar' );
+    var btnFechar   = document.getElementById( 'vl-filtros-fechar' );
+    var overlay     = document.getElementById( 'vl-filtros-overlay' );
+
+    function abrirSidebar() {
+        if ( ! shopSidebar ) return;
+        shopSidebar.classList.add( 'aberta' );
+        if ( overlay ) { overlay.classList.add( 'ativo' ); overlay.removeAttribute( 'aria-hidden' ); }
+        if ( btnFiltros ) btnFiltros.setAttribute( 'aria-expanded', 'true' );
+        document.body.style.overflow = 'hidden';
+    }
+
+    function fecharSidebar() {
+        if ( ! shopSidebar ) return;
+        shopSidebar.classList.remove( 'aberta' );
+        if ( overlay ) { overlay.classList.remove( 'ativo' ); overlay.setAttribute( 'aria-hidden', 'true' ); }
+        if ( btnFiltros ) btnFiltros.setAttribute( 'aria-expanded', 'false' );
+        document.body.style.overflow = '';
+    }
+
+    if ( btnFiltros && shopSidebar ) {
+        btnFiltros.addEventListener( 'click', abrirSidebar );
+        if ( btnFechar ) btnFechar.addEventListener( 'click', fecharSidebar );
+        if ( overlay )   overlay.addEventListener( 'click', fecharSidebar );
+        document.addEventListener( 'keydown', function( e ) {
+            if ( e.key === 'Escape' && shopSidebar.classList.contains( 'aberta' ) ) {
+                fecharSidebar();
+                btnFiltros.focus();
+            }
+        } );
+    }
+
+
+    // =========================================================
+    // === SEÇÕES COLAPSÁVEIS DOS FILTROS
+    // =========================================================
+
+    document.querySelectorAll( '.vl-filtro-secao-toggle' ).forEach( function( btn ) {
+        btn.addEventListener( 'click', function() {
+            var corpo  = this.nextElementSibling;
+            var aberto = this.getAttribute( 'aria-expanded' ) === 'true';
+            this.setAttribute( 'aria-expanded', aberto ? 'false' : 'true' );
+            corpo.classList.toggle( 'fechado', aberto );
+        } );
+    } );
+
+
+    // =========================================================
+    // === SLIDER DUPLO DE PREÇO
+    // Sincroniza dois range inputs com os inputs numéricos e
+    // atualiza a faixa colorida (track-fill) entre os thumbs.
+    // =========================================================
+
+    var sliderWrap = document.querySelector( '.vl-preco-slider-wrap' );
+
+    if ( sliderWrap ) {
+        var rangeMin  = sliderWrap.querySelector( '.vl-preco-range--min' );
+        var rangeMax  = sliderWrap.querySelector( '.vl-preco-range--max' );
+        var inputMin  = document.getElementById( 'vl-min-price' );
+        var inputMax  = document.getElementById( 'vl-max-price' );
+        var trackFill = document.getElementById( 'vl-preco-track-fill' );
+        var minG      = parseFloat( sliderWrap.dataset.min ) || 0;
+        var maxG      = parseFloat( sliderWrap.dataset.max ) || 1000;
+
+        function atualizarTrack() {
+            var mn   = parseFloat( rangeMin.value );
+            var mx   = parseFloat( rangeMax.value );
+            var pMin = ( ( mn - minG ) / ( maxG - minG ) ) * 100;
+            var pMax = ( ( mx - minG ) / ( maxG - minG ) ) * 100;
+            trackFill.style.left  = pMin + '%';
+            trackFill.style.width = ( pMax - pMin ) + '%';
+        }
+
+        rangeMin.addEventListener( 'input', function() {
+            var v = Math.min( parseFloat( this.value ), parseFloat( rangeMax.value ) - 1 );
+            this.value = v; inputMin.value = v; atualizarTrack();
+        } );
+
+        rangeMax.addEventListener( 'input', function() {
+            var v = Math.max( parseFloat( this.value ), parseFloat( rangeMin.value ) + 1 );
+            this.value = v; inputMax.value = v; atualizarTrack();
+        } );
+
+        inputMin.addEventListener( 'input', function() {
+            var v = Math.min( parseFloat( this.value ) || minG, parseFloat( inputMax.value ) - 1 );
+            this.value = v; rangeMin.value = v; atualizarTrack();
+        } );
+
+        inputMax.addEventListener( 'input', function() {
+            var v = Math.max( parseFloat( this.value ) || maxG, parseFloat( inputMin.value ) + 1 );
+            this.value = v; rangeMax.value = v; atualizarTrack();
+        } );
+
+        atualizarTrack();
+    }
+
 
 } ); // fim do DOMContentLoaded

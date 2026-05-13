@@ -10,6 +10,25 @@
 
 
 /* ===================================================
+   === VARIÁVEIS DINÂMICAS
+   --altura-header calculada via CSS para evitar layout
+   shift (antes era definida via JS após o carregamento).
+   Mobile: header-inner (0.75rem × 2 + 2rem logo) + 1px borda.
+   Desktop (≥ 768px): + nav row (1px + 0.65rem × 2 + 1.35rem) + 1px.
+   =================================================== */
+
+:root {
+    --altura-header: calc(3.5rem + 1px);
+}
+
+@media (min-width: 768px) {
+    :root {
+        --altura-header: calc(7.25rem + 2px);
+    }
+}
+
+
+/* ===================================================
    === UTILITÁRIOS
    Classes reutilizáveis em qualquer página.
    =================================================== */
@@ -330,6 +349,12 @@ input[type="button"] {
 .woocommerce-page .site-main {
     padding-top: var(--altura-header, 66px);
 }
+
+/* Remove espaço extra do Storefront quando não há breadcrumb */
+.no-wc-breadcrumb .site-header {
+    margin-bottom: 0 !important;
+}
+
 
 /* ======================================
    Desktop (≥ 768px)
@@ -840,6 +865,215 @@ input[type="button"] {
 
 
 /* ===================================================
+   === CONSULTA COM A ESPECIALISTA — HOME
+   Seção de destaque do diferencial: fundo verde,
+   duas colunas (texto + card visual), link para WhatsApp.
+   =================================================== */
+
+.vl-consulta-home {
+    background: linear-gradient(135deg, var(--cor-primaria) 0%, #2d8a0e 100%);
+    padding: 4rem 0;
+    color: #fff;
+}
+
+.vl-consulta-home-inner {
+    max-width: var(--largura-maxima);
+    margin: 0 auto;
+    padding: 0 var(--espacamento-base);
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+    align-items: center;
+}
+
+@media (min-width: 768px) {
+    .vl-consulta-home-inner {
+        grid-template-columns: 1fr 1fr;
+        gap: 4rem;
+    }
+}
+
+/* Lado esquerdo: texto */
+.vl-consulta-home-tag {
+    display: inline-block;
+    background-color: rgba(255,255,255,0.2);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.3rem 0.85rem;
+    border-radius: 20px;
+    margin-bottom: 1rem;
+}
+
+.vl-consulta-home-titulo {
+    font-family: var(--fonte-titulo);
+    font-size: 1.7rem;
+    font-weight: 700;
+    line-height: 1.25;
+    color: #fff;
+    margin: 0 0 1rem;
+}
+
+@media (min-width: 768px) {
+    .vl-consulta-home-titulo {
+        font-size: 2.1rem;
+    }
+}
+
+.vl-consulta-home-desc {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: rgba(255,255,255,0.88);
+    margin: 0 0 1.5rem;
+}
+
+.vl-consulta-home-beneficios {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.vl-consulta-home-beneficios li {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-size: 0.95rem;
+    color: rgba(255,255,255,0.92);
+}
+
+.vl-consulta-home-beneficios svg {
+    flex-shrink: 0;
+    color: #a7f3c0;
+}
+
+.vl-consulta-home-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 1rem 1.75rem;
+    font-size: 1rem;
+    font-weight: 700;
+    border-radius: 8px;
+    background-color: #fff;
+    color: var(--cor-primaria) !important;
+    text-decoration: none !important;
+    transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+}
+
+.vl-consulta-home-btn:hover {
+    background-color: #f0fdf4;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(0,0,0,0.2);
+}
+
+/* Lado direito: card visual */
+.vl-consulta-home-visual {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+}
+
+@media (min-width: 768px) {
+    .vl-consulta-home-visual {
+        align-items: center;
+    }
+}
+
+.vl-consulta-home-card {
+    background-color: #fff;
+    border-radius: 16px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+    max-width: 360px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+}
+
+.vl-consulta-home-avatar {
+    flex-shrink: 0;
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    background-color: #dcfce7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--cor-primaria);
+}
+
+.vl-consulta-home-card-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.vl-consulta-home-card-info strong {
+    font-size: 0.95rem;
+    color: var(--cor-texto);
+    font-weight: 700;
+}
+
+.vl-consulta-home-card-info span {
+    font-size: 0.8rem;
+    color: var(--cor-texto-suave);
+}
+
+.vl-consulta-home-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #16a34a;
+    background-color: #dcfce7;
+    padding: 0.3rem 0.7rem;
+    border-radius: 20px;
+    white-space: nowrap;
+}
+
+.vl-consulta-home-online {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #16a34a;
+    display: inline-block;
+    animation: vl-pulsar-online 2s ease-in-out infinite;
+}
+
+@keyframes vl-pulsar-online {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.4; }
+}
+
+.vl-consulta-home-balao {
+    background-color: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 12px 12px 12px 4px;
+    padding: 1rem 1.25rem;
+    max-width: 360px;
+    width: 100%;
+}
+
+.vl-consulta-home-balao p {
+    margin: 0;
+    font-size: 0.92rem;
+    color: rgba(255,255,255,0.95);
+    font-style: italic;
+    line-height: 1.6;
+}
+
+
+/* ===================================================
    === SOBRE A MARCA
    Seção de duas colunas: imagem + texto/valores.
    =================================================== */
@@ -1335,6 +1569,808 @@ input[type="button"] {
 
 
 /* ===================================================
+   === SIDEBAR DE FILTROS — LOJA / ARQUIVO DE PRODUTOS
+   Layout de duas colunas: sidebar fixa (esquerda) +
+   grade de produtos (direita). Mobile: overlay deslizante.
+   =================================================== */
+
+/* Wrapper externo da página da loja */
+.vl-shop-wrap {
+    max-width: var(--largura-maxima);
+    margin: 0 auto;
+    padding: 0;
+}
+
+@media (max-width: 899px) {
+    .vl-shop-wrap {
+        padding: 0 var(--espacamento-base) 3rem;
+    }
+}
+
+/* Topbar mobile: botão filtrar + contagem de resultados */
+.vl-shop-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 0 0.5rem;
+    border-bottom: 1px solid var(--cor-borda);
+    margin-bottom: 1.25rem;
+}
+
+@media (min-width: 900px) {
+    .vl-shop-topbar {
+        display: none;
+    }
+}
+
+.vl-filtros-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.55rem 1.1rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border: 2px solid var(--cor-borda);
+    border-radius: 8px;
+    background: #fff;
+    color: var(--cor-texto);
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+    position: relative;
+}
+
+.vl-filtros-toggle:hover {
+    border-color: var(--cor-primaria);
+    color: var(--cor-primaria);
+}
+
+.vl-filtros-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: var(--cor-primaria);
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 700;
+}
+
+.vl-shop-topbar-resultado {
+    font-size: 0.85rem;
+    color: var(--cor-texto-suave);
+}
+
+/* Overlay escuro mobile */
+.vl-filtros-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0,0,0,0.45);
+    z-index: 800;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.vl-filtros-overlay.ativo {
+    display: block;
+    opacity: 1;
+}
+
+/* Layout principal: sidebar + conteúdo */
+.vl-shop-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+    align-items: start;
+}
+
+@media (min-width: 900px) {
+    .vl-shop-layout {
+        grid-template-columns: 280px 1fr;
+        gap: 0;
+    }
+}
+
+/* ── Sidebar ── */
+.vl-shop-sidebar {
+    position: fixed;
+    top: 0;
+    left: -320px;
+    width: 300px;
+    height: 100vh;
+    overflow-y: auto;
+    background: #fff;
+    z-index: 900;
+    transition: left 0.3s ease;
+    padding: 0;
+    box-shadow: 4px 0 20px rgba(0,0,0,0.12);
+}
+
+.vl-shop-sidebar.aberta {
+    left: 0;
+}
+
+@media (min-width: 900px) {
+    .vl-shop-sidebar {
+        position: sticky;
+        top: calc(var(--altura-header, 80px) + 0.5rem);
+        left: auto;
+        width: auto;
+        height: auto;
+        max-height: calc(100vh - var(--altura-header, 80px) - 1rem);
+        overflow-y: auto;
+        border: 1px solid var(--cor-borda);
+        border-radius: 14px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        background: #fff;
+        padding: 0;
+        margin: 0;
+    }
+}
+
+/* ── Bloco de filtros ── */
+.vl-filtros {
+    padding: 0;
+}
+
+.vl-filtros-cabecalho {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.1rem 1.25rem;
+    border-bottom: 1px solid var(--cor-borda);
+    position: sticky;
+    top: 0;
+    background: #fff;
+    z-index: 1;
+    border-radius: 14px 14px 0 0;
+}
+
+.vl-filtros-titulo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--fonte-titulo);
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--cor-texto);
+    margin: 0;
+}
+
+.vl-filtros-fechar {
+    background: none;
+    border: none;
+    padding: 0.3rem;
+    cursor: pointer;
+    color: var(--cor-texto-suave);
+    border-radius: 6px;
+    transition: background 0.2s, color 0.2s;
+    display: flex;
+    align-items: center;
+}
+
+.vl-filtros-fechar:hover {
+    background: #f5f5f5;
+    color: var(--cor-texto);
+}
+
+@media (min-width: 900px) {
+    .vl-filtros-fechar {
+        display: none;
+    }
+}
+
+/* ── Filtros ativos ── */
+.vl-filtros-ativos {
+    padding: 0.85rem 1.25rem;
+    border-bottom: 1px solid var(--cor-borda);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.vl-filtros-ativos-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--cor-texto-suave);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    width: 100%;
+}
+
+.vl-filtros-ativos-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    flex: 1;
+}
+
+.vl-filtro-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.3rem 0.7rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    background-color: #e8f5e0;
+    color: var(--cor-primaria);
+    border: 1px solid #c5e8a6;
+    border-radius: 20px;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+
+.vl-filtro-tag:hover {
+    background-color: #d4edbd;
+}
+
+.vl-filtros-limpar-todos {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #e53e3e;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.vl-filtros-limpar-todos:hover {
+    text-decoration: underline;
+}
+
+/* ── Seções colapsáveis ── */
+.vl-filtro-secao {
+    border-bottom: 1px solid var(--cor-borda);
+}
+
+.vl-filtro-secao-titulo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0.9rem 1.25rem;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--cor-texto);
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    transition: color 0.2s;
+}
+
+.vl-filtro-secao-titulo:hover {
+    color: var(--cor-primaria);
+}
+
+.vl-filtro-chevron {
+    flex-shrink: 0;
+    transition: transform 0.25s ease;
+}
+
+.vl-filtro-secao-titulo[aria-expanded="false"] .vl-filtro-chevron {
+    transform: rotate(180deg);
+}
+
+.vl-filtro-secao-corpo {
+    padding: 0 1.25rem 1rem;
+    overflow: hidden;
+    transition: max-height 0.25s ease, opacity 0.25s ease;
+}
+
+.vl-filtro-secao-corpo.fechado {
+    display: none;
+}
+
+/* ── Categorias ── */
+.vl-filtro-categorias,
+.vl-filtro-subcategorias {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.vl-filtro-subcategorias {
+    padding-left: 0.85rem;
+    margin-top: 0.2rem;
+    border-left: 2px solid var(--cor-borda);
+}
+
+.vl-filtro-cat-item {
+    margin-bottom: 0.1rem;
+}
+
+.vl-filtro-cat-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.35rem 0.5rem;
+    font-size: 0.88rem;
+    color: var(--cor-texto);
+    text-decoration: none;
+    border-radius: 6px;
+    transition: background 0.15s, color 0.15s;
+}
+
+.vl-filtro-cat-link:hover,
+.vl-filtro-cat-link--filha:hover {
+    background-color: #f0fdf4;
+    color: var(--cor-primaria);
+}
+
+.vl-filtro-cat-item--ativa > .vl-filtro-cat-link,
+.vl-filtro-cat-link[aria-current="page"] {
+    color: var(--cor-primaria);
+    font-weight: 700;
+    background-color: #e8f5e0;
+}
+
+.vl-filtro-cat-link--filha {
+    font-size: 0.83rem;
+    color: var(--cor-texto-suave);
+    padding: 0.3rem 0.4rem;
+}
+
+.vl-filtro-cat-count {
+    font-size: 0.75rem;
+    color: var(--cor-texto-suave);
+    font-weight: 400;
+    margin-left: 0.25rem;
+}
+
+/* ── Slider de preço ── */
+.vl-preco-slider-wrap {
+    position: relative;
+    height: 36px;
+    margin-bottom: 1rem;
+}
+
+.vl-preco-track {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--cor-borda);
+    border-radius: 2px;
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
+.vl-preco-track-fill {
+    position: absolute;
+    height: 100%;
+    background: var(--cor-primaria);
+    border-radius: 2px;
+}
+
+.vl-preco-range {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 100%;
+    height: 4px;
+    background: transparent;
+    pointer-events: none;
+    -webkit-appearance: none;
+    appearance: none;
+    outline: none;
+}
+
+.vl-preco-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--cor-primaria);
+    border: 2px solid #fff;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+    cursor: pointer;
+    pointer-events: all;
+    transition: box-shadow 0.15s;
+}
+
+.vl-preco-range::-webkit-slider-thumb:hover {
+    box-shadow: 0 0 0 4px rgba(74,163,28,0.2);
+}
+
+.vl-preco-range::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--cor-primaria);
+    border: 2px solid #fff;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+    cursor: pointer;
+    pointer-events: all;
+}
+
+.vl-preco-inputs {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.vl-preco-campo {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.vl-preco-campo label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--cor-texto-suave);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.vl-preco-input-wrap {
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--cor-borda);
+    border-radius: 6px;
+    overflow: hidden;
+    background: #fff;
+    transition: border-color 0.2s;
+}
+
+.vl-preco-input-wrap:focus-within {
+    border-color: var(--cor-primaria);
+}
+
+.vl-preco-input-wrap span {
+    padding: 0 0.4rem 0 0.6rem;
+    font-size: 0.8rem;
+    color: var(--cor-texto-suave);
+    white-space: nowrap;
+}
+
+.vl-preco-input-wrap input[type="number"] {
+    border: none;
+    outline: none;
+    width: 100%;
+    padding: 0.45rem 0.5rem 0.45rem 0;
+    font-size: 0.88rem;
+    color: var(--cor-texto);
+    background: transparent;
+    -moz-appearance: textfield;
+}
+
+.vl-preco-input-wrap input[type="number"]::-webkit-inner-spin-button,
+.vl-preco-input-wrap input[type="number"]::-webkit-outer-spin-button {
+    opacity: 1;
+}
+
+.vl-preco-separador {
+    font-size: 0.85rem;
+    color: var(--cor-texto-suave);
+    flex-shrink: 0;
+    margin-top: 1.1rem;
+}
+
+/* ── Avaliação ── */
+.vl-filtro-rating {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.vl-filtro-radio {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.87rem;
+    color: var(--cor-texto);
+    transition: background 0.15s;
+}
+
+.vl-filtro-radio:hover {
+    background-color: #f5f5f5;
+}
+
+.vl-filtro-radio input[type="radio"] {
+    display: none;
+}
+
+.vl-filtro-radio--ativa,
+.vl-filtro-radio:has(input:checked) {
+    background-color: #e8f5e0;
+    color: var(--cor-primaria);
+    font-weight: 600;
+}
+
+.vl-stars {
+    font-size: 1rem;
+    letter-spacing: -0.05em;
+}
+
+.vl-star--cheia { color: #f5a623; }
+.vl-star--vazia { color: #ddd; }
+
+/* ── Checkbox disponibilidade ── */
+.vl-filtro-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    cursor: pointer;
+    font-size: 0.88rem;
+    color: var(--cor-texto);
+    user-select: none;
+}
+
+.vl-filtro-checkbox input[type="checkbox"] {
+    display: none;
+}
+
+.vl-filtro-checkbox-mark {
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--cor-borda);
+    border-radius: 4px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s, border-color 0.15s;
+}
+
+.vl-filtro-checkbox input:checked ~ .vl-filtro-checkbox-mark {
+    background-color: var(--cor-primaria);
+    border-color: var(--cor-primaria);
+}
+
+.vl-filtro-checkbox input:checked ~ .vl-filtro-checkbox-mark::after {
+    content: '';
+    display: block;
+    width: 5px;
+    height: 9px;
+    border: 2px solid #fff;
+    border-top: none;
+    border-left: none;
+    transform: rotate(45deg) translate(-1px, -1px);
+}
+
+/* ── Botões de ação ── */
+.vl-filtros-acoes {
+    padding: 1rem 1.25rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.vl-filtros-aplicar {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 0.95rem;
+    font-weight: 700;
+    border-radius: 8px;
+    background-color: var(--cor-primaria) !important;
+    color: #fff !important;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.15s;
+}
+
+.vl-filtros-aplicar:hover {
+    background-color: var(--cor-primaria-escura, #3a7a1e) !important;
+    transform: translateY(-1px);
+}
+
+.vl-filtros-limpar {
+    display: block;
+    text-align: center;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--cor-texto-suave);
+    text-decoration: none;
+    padding: 0.4rem;
+    border-radius: 6px;
+    transition: color 0.2s;
+}
+
+.vl-filtros-limpar:hover {
+    color: #e53e3e;
+}
+
+/* Área de conteúdo: padding e max-width interno */
+.vl-shop-conteudo {
+    padding: 0 var(--espacamento-base) 0 2rem;
+    min-width: 0;
+}
+
+@media (min-width: 900px) {
+    .vl-shop-conteudo {
+        padding: 0 1rem 0 1.5rem;
+    }
+}
+
+/* Grid de produtos dentro do layout da loja */
+.vl-shop-conteudo ul.products {
+    width: 100% !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    justify-content: start !important;
+}
+
+/* Remove clearfix do Storefront — vira grid item indesejado em display:grid */
+ul.vl-products-grid::before,
+ul.vl-products-grid::after {
+    display: none !important;
+    content: none !important;
+}
+
+/* Grid sem conflito — classe exclusiva do child theme */
+ul.vl-products-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 1.25rem !important;
+    width: 100% !important;
+    justify-content: start !important;
+    list-style: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    float: none !important;
+}
+
+ul.vl-products-grid li.product {
+    width: 100% !important;
+    float: none !important;
+    clear: none !important;
+    margin: 0 !important;
+}
+
+@media (max-width: 599px) {
+    ul.vl-products-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+}
+
+/* Título da vitrine / categoria */
+.vl-shop-titulo {
+    font-family: var(--fonte-titulo);
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--cor-texto);
+    margin: 0 0 0.5rem;
+    line-height: 1.3;
+}
+
+/* ── Toolbar de ordenação ── */
+.vl-shop-barra {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-bottom: 0.75rem;
+    margin-bottom: 1.25rem;
+    border-bottom: 1px solid var(--cor-borda);
+}
+
+.vl-shop-barra-resultado {
+    font-size: 0.85rem;
+    color: var(--cor-texto-suave);
+}
+
+.vl-shop-barra-resultado p {
+    margin: 0;
+}
+
+.vl-shop-barra-ordem {
+    flex-shrink: 0;
+}
+
+/* Select de ordenação — estilo customizado */
+.vl-shop-barra-ordem .woocommerce-ordering {
+    margin: 0;
+}
+
+.vl-shop-barra-ordem .woocommerce-ordering select.orderby,
+select.orderby {
+    appearance: none;
+    -webkit-appearance: none;
+    background-color: #fff;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    padding: 0.5rem 2.25rem 0.5rem 0.85rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--cor-texto);
+    border: 1.5px solid var(--cor-borda);
+    border-radius: 8px;
+    cursor: pointer;
+    min-width: 180px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    line-height: 1.4;
+}
+
+.vl-shop-barra-ordem .woocommerce-ordering select.orderby:hover,
+.vl-shop-barra-ordem .woocommerce-ordering select.orderby:focus {
+    border-color: var(--cor-primaria);
+    box-shadow: 0 0 0 3px rgba(74,163,28,0.12);
+    outline: none;
+}
+
+.vl-shop-conteudo .woocommerce-products-header__title {
+    font-family: var(--fonte-titulo);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--cor-texto);
+    margin: 0 0 0.5rem;
+}
+
+/* ── Nenhum produto encontrado ── */
+.vl-sem-produtos {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 3.5rem 1.5rem;
+    background-color: var(--cor-fundo);
+    border: 1px solid var(--cor-borda);
+    border-radius: 16px;
+    margin: 1rem 0 2rem;
+}
+
+.vl-sem-produtos-icone {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    background-color: #f5ede3;
+    color: var(--cor-primaria);
+    margin-bottom: 1.5rem;
+}
+
+.vl-sem-produtos-titulo {
+    font-family: var(--fonte-titulo);
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--cor-texto);
+    margin: 0 0 0.75rem;
+}
+
+.vl-sem-produtos-texto {
+    font-size: 0.95rem;
+    color: var(--cor-texto-suave);
+    line-height: 1.6;
+    max-width: 420px;
+    margin: 0 0 2rem;
+}
+
+.vl-sem-produtos-btn {
+    display: inline-block;
+    background-color: var(--cor-primaria);
+    color: #fff;
+    font-family: var(--fonte-principal);
+    font-size: 0.95rem;
+    font-weight: 600;
+    padding: 0.7rem 1.75rem;
+    border-radius: var(--raio-borda);
+    text-decoration: none;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.vl-sem-produtos-btn:hover {
+    background-color: var(--cor-primaria-hover);
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+
+/* ===================================================
    === VITRINE DE PRODUTOS
    Grid de listagem — categoria, busca e home.
    =================================================== */
@@ -1375,9 +2411,10 @@ input[type="button"] {
     display: flex;
     flex-direction: column;
     transition: box-shadow 0.25s ease, transform 0.25s ease, border-color 0.25s ease;
-    width: 100% !important; /* anula largura inline do Storefront */
+    width: 100% !important;
     margin: 0 !important;
     float: none !important;
+    clear: none !important;
 }
 
 /* Animação de entrada — estado inicial (via JS + IntersectionObserver) */
@@ -1409,6 +2446,14 @@ input[type="button"] {
     object-fit: cover;
     border-radius: var(--raio-borda) var(--raio-borda) 0 0;
     display: block;
+}
+
+/* Link que envolve imagem + título — cresce para empurrar preço/botão ao fundo */
+.woocommerce ul.products li.product > a:not(.button),
+.woocommerce-page ul.products li.product > a:not(.button) {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
 }
 
 /* Título do produto */
@@ -1542,7 +2587,8 @@ input[type="button"] {
 .woocommerce .woocommerce-breadcrumb {
     font-size: 0.85rem;
     color: var(--cor-texto-suave);
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.25rem;
+    margin-top: 0;
 }
 
 .woocommerce .woocommerce-breadcrumb a {
@@ -2367,6 +3413,83 @@ input[type="button"] {
 .vl-produto-selo svg {
     color: var(--cor-primaria);
     flex-shrink: 0;
+}
+
+/* ── Consulta com a Fisioterapeuta ── */
+.vl-consulta-especialista {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    background-color: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-left: 4px solid var(--cor-primaria);
+    border-radius: 10px;
+    padding: 0.9rem 1rem;
+    margin: 1rem 0;
+}
+
+.vl-consulta-icone {
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    background-color: #dcfce7;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--cor-primaria);
+}
+
+.vl-consulta-corpo {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    min-width: 0;
+}
+
+.vl-consulta-titulo {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--cor-texto);
+    line-height: 1.3;
+}
+
+.vl-consulta-subtitulo {
+    font-size: 0.8rem;
+    color: var(--cor-texto-suave);
+    line-height: 1.4;
+}
+
+.vl-consulta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    flex-shrink: 0;
+    padding: 0.55rem 1rem;
+    font-size: 0.82rem;
+    font-weight: 700;
+    border-radius: 7px;
+    background-color: #25d366;
+    color: #fff !important;
+    text-decoration: none !important;
+    white-space: nowrap;
+    transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+.vl-consulta-btn:hover {
+    background-color: #1ebe5a;
+    transform: translateY(-1px);
+}
+
+@media (max-width: 480px) {
+    .vl-consulta-especialista {
+        flex-wrap: wrap;
+    }
+    .vl-consulta-btn {
+        width: 100%;
+        justify-content: center;
+    }
 }
 
 /* ── Meta (SKU, categorias) ── */
