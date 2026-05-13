@@ -641,9 +641,9 @@ add_filter( 'ngettext', function( $traduzido, $singular, $plural, $numero, $domi
  * Filtros por preço, avaliação e disponibilidade via query vars.
  * ========================================================= */
 
-// Layout full-width em todas as páginas de arquivo de produtos
+// Layout full-width em todas as páginas WooCommerce (loja, produto, carrinho, checkout)
 add_filter( 'storefront_layout', function( $layout ) {
-    if ( is_shop() || is_product_category() || is_product_tag() || is_product() ) {
+    if ( is_shop() || is_product_category() || is_product_tag() || is_product() || is_cart() || is_checkout() || is_account_page() ) {
         return 'full-width';
     }
     return $layout;
