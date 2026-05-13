@@ -697,7 +697,7 @@ input[type="button"] {
    =================================================== */
 
 .vl-categorias-home {
-    padding: 3rem 0 0;
+    padding: 3.5rem 0;
 }
 
 .vl-categorias-home-inner {
@@ -706,110 +706,140 @@ input[type="button"] {
     padding: 0 var(--espacamento-base);
 }
 
-.vl-categorias-grid {
+/* ── Cabeçalho da seção com link "Ver todos" ── */
+.vl-secao-header--com-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+}
+
+.vl-ver-todos-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--cor-primaria);
+    text-decoration: none;
+    transition: gap 0.2s ease, color 0.2s ease;
+    white-space: nowrap;
+}
+
+.vl-ver-todos-link:hover {
+    color: var(--cor-primaria-hover);
+    gap: 0.55rem;
+}
+
+/* ── Grade de 4 categorias ── */
+.vl-cat-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
 }
 
-/* 3 colunas iguais no desktop */
 @media (min-width: 768px) {
-    .vl-categorias-grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 1.25rem;
-    }
-
-    /* Se houver só 2 categorias, cada uma ocupa metade */
-    .vl-categorias-grid[data-total="2"] {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    /* Se houver 4, duas linhas de 2 */
-    .vl-categorias-grid[data-total="4"] {
-        grid-template-columns: repeat(2, 1fr);
+    .vl-cat-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1rem;
     }
 }
 
-/* Card individual */
-.vl-categoria-card {
+/* ── Card ── */
+.vl-cat-card {
     position: relative;
     display: block;
-    aspect-ratio: 4 / 3;
-    background-size: cover;
-    background-position: center;
-    border-radius: 8px;
+    aspect-ratio: 3 / 4;
+    border-radius: 14px;
     overflow: hidden;
     text-decoration: none;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background-color: #e8d5c0;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
 }
 
-.vl-categoria-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.18);
+.vl-cat-card:hover {
+    box-shadow: 0 10px 30px rgba(0,0,0,0.16);
+    transform: translateY(-4px);
 }
 
-/* Fallback sem imagem: usa cor primária como fundo */
-.vl-categoria-card--sem-imagem {
-    background-color: var(--cor-primaria);
+.vl-cat-card--sem-imagem {
+    background: linear-gradient(145deg, var(--cor-primaria) 0%, var(--cor-primaria-hover) 100%);
 }
 
-.vl-categoria-card--sem-imagem .vl-categoria-card-overlay {
-    background: rgba(0, 0, 0, 0.15);
-}
-
-/* Overlay escurece a imagem para o texto ficar legível */
-.vl-categoria-card-overlay {
+/* ── Imagem com zoom ── */
+.vl-cat-card-imagem {
     position: absolute;
     inset: 0;
-    background: linear-gradient(to top, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.1) 55%, transparent 100%);
-    transition: background 0.3s ease;
+    overflow: hidden;
 }
 
-.vl-categoria-card:hover .vl-categoria-card-overlay {
-    background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.2) 55%, transparent 100%);
+.vl-cat-card-imagem img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    transition: transform 0.5s ease;
 }
 
-/* Texto na parte inferior do card */
-.vl-categoria-card-info {
+.vl-cat-card:hover .vl-cat-card-imagem img {
+    transform: scale(1.07);
+}
+
+/* ── Overlay ── */
+.vl-cat-card-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        to top,
+        rgba(25, 14, 5, 0.82) 0%,
+        rgba(25, 14, 5, 0.18) 50%,
+        transparent 100%
+    );
+}
+
+/* ── Info ── */
+.vl-cat-card-info {
     position: absolute;
     bottom: 0;
     left: 0;
     right: 0;
-    padding: 1rem 1.1rem;
+    padding: 1.1rem 1rem 1rem;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 0.3rem;
 }
 
-.vl-categoria-card-nome {
-    display: block;
+.vl-cat-card-nome {
     color: #fff;
+    font-family: var(--fonte-titulo);
     font-size: 1rem;
     font-weight: 700;
     line-height: 1.2;
-    text-shadow: 0 1px 4px rgba(0,0,0,0.4);
+    text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+    transition: transform 0.25s ease;
 }
 
-.vl-categoria-card-cta {
-    display: block;
-    color: rgba(255,255,255,0.85);
-    font-size: 0.78rem;
-    font-weight: 500;
-    letter-spacing: 0.03em;
+.vl-cat-card:hover .vl-cat-card-nome {
+    transform: translateY(-2px);
+}
+
+.vl-cat-card-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    color: rgba(255,255,255,0.88);
+    font-size: 0.8rem;
+    font-weight: 600;
     opacity: 0;
-    transform: translateY(4px);
+    transform: translateY(5px);
     transition: opacity 0.25s ease, transform 0.25s ease;
 }
 
-.vl-categoria-card:hover .vl-categoria-card-cta {
+.vl-cat-card:hover .vl-cat-card-cta {
     opacity: 1;
     transform: translateY(0);
-}
-
-@media (min-width: 768px) {
-    .vl-categoria-card-nome {
-        font-size: 1.15rem;
-    }
 }
 
 
