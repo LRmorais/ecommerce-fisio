@@ -1,17 +1,9 @@
 <?php
 /**
- * Override: checkout/form-checkout.php
- * Viva Leve Child Theme
- * Baseado no template original do WooCommerce — personalizado com textos em PT-BR
+ * Override: checkout/form-checkout.php — Viva Leve Child Theme
  *
- * COMO OBTER O ARQUIVO ORIGINAL:
- * Copie de:
- *   ~/Local Sites/viva-leve/app/public/wp-content/plugins/woocommerce/templates/checkout/form-checkout.php
- * Cole em:
- *   ~/Local Sites/viva-leve/app/public/wp-content/themes/viva-leve-child/woocommerce/checkout/form-checkout.php
- *
- * @see     https://woocommerce.com/document/template-structure/
- * @package WooCommerce\Templates\Checkout
+ * @package VivaLeveChild
+ * @version 7.9.0
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -32,38 +24,62 @@ if ( ! WC()->checkout()->is_registration_enabled() && WC()->checkout()->is_regis
 }
 ?>
 
-<form name="checkout" method="post" class="checkout woocommerce-checkout" action="<?php echo esc_url( wc_get_checkout_url() ); ?>" enctype="multipart/form-data">
+<div class="vl-checkout-wrap">
 
-	<?php if ( $checkout->get_checkout_fields() ) : ?>
+    <div class="vl-checkout-header">
+        <h1 class="vl-checkout-titulo"><?php esc_html_e( 'Finalizar pedido', 'viva-leve-child' ); ?></h1>
+        <a href="<?php echo esc_url( wc_get_cart_url() ); ?>" class="vl-checkout-voltar">
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
+                 fill="none" stroke="currentColor" stroke-width="2.5"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="15 18 9 12 15 6"/>
+            </svg>
+            <?php esc_html_e( 'Voltar ao carrinho', 'viva-leve-child' ); ?>
+        </a>
+    </div>
 
-		<?php do_action( 'woocommerce_checkout_before_customer_details' ); ?>
+    <form name="checkout" method="post"
+          class="checkout woocommerce-checkout vl-checkout-layout"
+          action="<?php echo esc_url( wc_get_checkout_url() ); ?>"
+          enctype="multipart/form-data">
 
-		<div class="col2-set" id="customer_details">
-			<div class="col-1">
-				<?php do_action( 'woocommerce_checkout_billing' ); ?>
-			</div>
+        <!-- ── Campos do formulário ── -->
+        <div class="vl-checkout-form">
 
-			<div class="col-2">
-				<?php do_action( 'woocommerce_checkout_shipping' ); ?>
-			</div>
-		</div>
+            <?php if ( $checkout->get_checkout_fields() ) : ?>
 
-		<?php do_action( 'woocommerce_checkout_after_customer_details' ); ?>
+                <?php do_action( 'woocommerce_checkout_before_customer_details' ); ?>
 
-	<?php endif; ?>
+                <div id="customer_details">
+                    <?php do_action( 'woocommerce_checkout_billing' ); ?>
+                    <?php do_action( 'woocommerce_checkout_shipping' ); ?>
+                </div>
 
-	<?php do_action( 'woocommerce_checkout_before_order_review_heading' ); ?>
+                <?php do_action( 'woocommerce_checkout_after_customer_details' ); ?>
 
-	<h3 id="order_review_heading">Seu pedido</h3>
+            <?php endif; ?>
 
-	<?php do_action( 'woocommerce_checkout_before_order_review' ); ?>
+        </div><!-- .vl-checkout-form -->
 
-	<div id="order_review" class="woocommerce-checkout-review-order">
-		<?php do_action( 'woocommerce_checkout_order_review' ); ?>
-	</div>
+        <!-- ── Resumo do pedido ── -->
+        <div class="vl-checkout-sidebar">
 
-	<?php do_action( 'woocommerce_checkout_after_order_review' ); ?>
+            <?php do_action( 'woocommerce_checkout_before_order_review_heading' ); ?>
 
-</form>
+            <h3 id="order_review_heading"><?php esc_html_e( 'Seu pedido', 'viva-leve-child' ); ?></h3>
+
+            <?php do_action( 'woocommerce_checkout_before_order_review' ); ?>
+
+            <div id="order_review" class="woocommerce-checkout-review-order">
+                <?php do_action( 'woocommerce_checkout_order_review' ); ?>
+            </div>
+
+            <?php do_action( 'woocommerce_checkout_after_order_review' ); ?>
+
+        </div><!-- .vl-checkout-sidebar -->
+
+    </form>
+
+</div><!-- .vl-checkout-wrap -->
 
 <?php do_action( 'woocommerce_after_checkout_form', WC()->checkout() ); ?>

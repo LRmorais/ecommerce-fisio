@@ -50,18 +50,18 @@
             <!-- Ações: atendimento + conta + carrinho + hamburguer (mobile) -->
             <div class="vl-acoes">
 
-                <!-- Atendimento -->
-                <a href="/contato"
+                <!-- Atendimento via WhatsApp -->
+                <?php $vl_wpp = preg_replace( '/\D/', '', get_theme_mod( 'vl_footer_whatsapp', '' ) ); ?>
+                <a href="<?php echo $vl_wpp ? esc_url( 'https://wa.me/' . $vl_wpp ) : '#'; ?>"
                    class="vl-icone vl-icone-atendimento"
-                   aria-label="<?php esc_attr_e( 'Atendimento', 'viva-leve-child' ); ?>">
+                   aria-label="<?php esc_attr_e( 'Atendimento via WhatsApp', 'viva-leve-child' ); ?>"
+                   <?php if ( $vl_wpp ) : ?>target="_blank" rel="noopener noreferrer"<?php endif; ?>>
                     <span class="vl-icone-svg">
                         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"
                              fill="none" stroke="currentColor" stroke-width="1.75"
                              stroke-linecap="round" stroke-linejoin="round"
                              aria-hidden="true" focusable="false">
-                            <path d="M3 18v-6a9 9 0 0 1 18 0v6"/>
-                            <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3z"/>
-                            <path d="M3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/>
+                            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
                         </svg>
                     </span>
                     <span class="vl-icone-label"><?php esc_html_e( 'Atendimento', 'viva-leve-child' ); ?></span>
